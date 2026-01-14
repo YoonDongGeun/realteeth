@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RealTeeth 채용 과제
 
-## Getting Started
+RealTeeth 채용 과제로 날씨 앱 구현한 프로젝트입니다.
 
-First, run the development server:
+## 요구사항
+
+### 필수 환경
+- **Node.js ≥20.9.0** (프로젝트는 24.13.0 사용)
+- **TypeScript ≥5.1.0**
+- **pnpm 10.28.0** (Corepack으로 자동 관리)
+- **nvm** (Node.js 버전 관리)
+
+### 지원 브라우저
+- Chrome 111+
+- Edge 111+
+- Firefox 111+
+- Safari 16.4+
+
+## 프로젝트 실행 방법
+
+### 1. Node.js 버전 설정
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+nvm install 24.13.0
+nvm use 24.13.0
+node -v  # 버전 확인
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Corepack 설정
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Corepack을 최신 버전으로 업데이트하고 활성화합니다. ([서명키 이슈](https://pnpm.io/installation#using-corepack))
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install --global corepack@latest
+corepack enable pnpm
+```
 
-## Learn More
+### 3. 의존성 설치
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+corepack pnpm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. 개발 서버 실행
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+corepack pnpm dev
+```
 
-## Deploy on Vercel
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 결과를 확인할 수 있습니다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 사용 가능한 스크립트
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+corepack pnpm dev      # 개발 서버 실행
+corepack pnpm build    # 프로덕션 빌드
+corepack pnpm start    # 프로덕션 서버 실행
+corepack pnpm lint     # ESLint 실행
+```
+
+## 참고사항
+
+- 이 프로젝트는 `packageManager` 필드를 통해 pnpm 버전을 고정합니다.
+- Corepack이 자동으로 올바른 버전의 pnpm을 사용합니다.
+- `.nvmrc` 파일에 Node.js 버전이 명시되어 있습니다.
