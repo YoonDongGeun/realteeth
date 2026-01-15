@@ -31,26 +31,31 @@ app → widgets → features → entities → shared
 ## 각 레이어 설명
 
 ### `app/` - Pages + App Layer
+
 - Next.js App Router의 라우팅 디렉토리
 - 페이지 구성과 레이아웃 정의
 - widgets를 조합하여 페이지 구성
 
 ### `widgets/` - Widgets Layer
+
 - 완성된 독립적인 UI 블록
 - features와 entities를 조합
 - 페이지에서 바로 사용 가능
 
 ### `features/` - Features Layer
+
 - 사용자 시나리오 구현
 - 비즈니스 로직 처리
 - entities를 활용
 
 ### `entities/` - Entities Layer
+
 - 비즈니스 엔티티 정의
 - 데이터 모델과 비즈니스 규칙
 - 도메인 중심 설계
 
 ### `shared/` - Shared Layer
+
 - 프로젝트 공통 코드
 - 재사용 가능한 유틸리티
 - 비즈니스 로직에 독립적

@@ -5,12 +5,14 @@ RealTeeth 채용 과제로 날씨 앱 구현한 프로젝트입니다.
 ## 요구사항
 
 ### 필수 환경
+
 - **Node.js ≥20.9.0** (프로젝트는 24.13.0 사용)
 - **TypeScript ≥5.1.0**
 - **pnpm 10.28.0** (Corepack으로 자동 관리)
 - **nvm** (Node.js 버전 관리)
 
 ### 지원 브라우저
+
 - Chrome 111+
 - Edge 111+
 - Firefox 111+
