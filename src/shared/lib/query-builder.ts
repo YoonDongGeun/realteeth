@@ -67,8 +67,8 @@ export class QueryStringBuilder {
   }
 
   build(): string {
-    if (!this.base) {
-      throw new Error("Base URL이 없습니다.");
+    if (!this.base && !this.endpoint) {
+      throw new Error("URL이 옳바르지 않습니다.");
     }
 
     // baseUrl과 endpoint를 결합
