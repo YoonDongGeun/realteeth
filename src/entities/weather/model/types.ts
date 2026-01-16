@@ -1,17 +1,17 @@
-import type { ISODateTime } from '@/shared/types/common';
+import { Dayjs } from "dayjs";
 
 /**
  * 날씨 상태 코드
  */
 export type WeatherCondition =
-  | 'clear' // 맑음
-  | 'partly_cloudy' // 구름 조금
-  | 'cloudy' // 흐림
-  | 'rain' // 비
-  | 'snow' // 눈
-  | 'sleet' // 진눈깨비
-  | 'thunderstorm' // 천둥번개
-  | 'fog'; // 안개
+  | "clear" // 맑음
+  | "partly_cloudy" // 구름 조금
+  | "cloudy" // 흐림
+  | "rain" // 비
+  | "snow" // 눈
+  | "sleet" // 진눈깨비
+  | "thunderstorm" // 천둥번개
+  | "fog"; // 안개
 
 /**
  * 현재 날씨 정보
@@ -32,7 +32,7 @@ export interface CurrentWeather {
   /** 강수량 (mm) */
   precipitation: number;
   /** 측정 시간 */
-  measuredAt: ISODateTime;
+  measuredAt: Dayjs;
 }
 
 /**
@@ -56,7 +56,7 @@ export interface DailyWeather {
  */
 export interface HourlyWeather {
   /** 시간 */
-  time: ISODateTime;
+  time: Dayjs;
   /** 기온 (°C) */
   temperature: number;
   /** 날씨 상태 */

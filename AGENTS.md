@@ -162,12 +162,3 @@ SignupForm 컴포넌트의 복잡한 상태 관리 로직을 커스텀 훅으로
 3. **원자성**: 하나의 커밋은 하나의 논리적 변경사항을 담아야 합니다. 여러 타입의 변경이 섞여있다면 커밋을 나누는 것을 고려합니다.
 
 4. **일관성**: 항상 동일한 형식을 유지하여 팀 전체의 커밋 히스토리가 일관되게 관리되도록 합니다.
-
-5. **Co-Author 태그**: 커밋 메시지 마지막에는 항상 다음 내용을 자동으로 포함합니다:
-
-   ```
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-   Co-Authored-By: Claude <noreply@anthropic.com>
-   ```

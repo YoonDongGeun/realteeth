@@ -19,12 +19,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
-      "@widgets/*": ["./src/widgets/*"],
-      "@features/*": ["./src/features/*"],
-      "@entities/*": ["./src/entities/*"],
-      "@shared/*": ["./src/shared/*"]
+      "@widgets/*": ["./src/widgets/*/index.ts"],
+      "@features/*": ["./src/features/*/index.ts"],
+      "@entities/*": ["./src/entities/*/index.ts"],
+      "@shared/*": ["./src/shared/*/index.ts"]
     },
     "types": ["@testing-library/jest-dom", "jest"]
   },

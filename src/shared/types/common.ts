@@ -1,13 +1,10 @@
-/**
- * 공통 타입 정의
- */
+export type ParcelAddress = string;
+export type RoadNameAddress = string;
 
 /**
- * 온도 단위
+ * lat - 위도, lng - 경도
  */
-export type TemperatureUnit = 'celsius' | 'fahrenheit';
-
-/**
- * 날짜/시간 문자열 (ISO 8601 형식)
- */
-export type ISODateTime = string;
+export type Coordinate = {
+  lat: number;
+  lng: number;
+};
