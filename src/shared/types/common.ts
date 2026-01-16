@@ -1,10 +1,12 @@
+import { z } from "zod";
+
 export type ParcelAddress = string;
 export type RoadNameAddress = string;
 
-/**
- * lat - 위도, lng - 경도
- */
-export type Coordinate = {
-  lat: number;
-  lng: number;
-};
+const CoordinateSchema = z.object({
+  lat: z.number(),
+  lng: z.number(),
+});
+
+export const coordinateToStringSchema = CoordinateSchema.transform((coord) => `${coord.lng},${coord.lat}`);
+export type Coordinate = z.infer<typeof CoordinateSchema>;

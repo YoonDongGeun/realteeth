@@ -47,16 +47,22 @@ export class QueryStringBuilder {
   /**
    * 단일 파라미터 추가/수정
    */
-  set(key: string, value: string | number | boolean): this {
-    this.params[key] = value;
+  set(key: string, value: string | number | boolean | undefined): this {
+    if (value !== undefined) {
+      this.params[key] = value;
+    }
     return this;
   }
 
   /**
    * 여러 파라미터 한 번에 추가/수정
    */
-  setMany(params: Record<string, string | number | boolean>): this {
-    Object.assign(this.params, params);
+  setMany(params: Record<string, string | number | boolean | undefined>): this {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        this.params[key] = value;
+      }
+    });
     return this;
   }
 
