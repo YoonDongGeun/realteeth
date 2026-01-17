@@ -43,6 +43,8 @@ export interface DailyWeather {
   condition: WeatherCondition;
   /** 강수 확률 (%) */
   precipitationProbability: number;
+  /** 시간대별 날씨 정보 */
+  hourly: HourlyWeather[];
 }
 
 /**

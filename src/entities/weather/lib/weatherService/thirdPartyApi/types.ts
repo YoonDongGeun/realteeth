@@ -10,31 +10,31 @@ export const FORECAST_API_KRY = () => {
 };
 
 export const CATEGORY_CODE = {
-  TMP: "TMP",
-  UUU: "UUU",
-  VVV: "VVV",
-  VEC: "VEC",
-  WSD: "WSD",
-  SKY: "SKY",
-  PTY: "PTY",
-  POP: "POP",
-  WAV: "WAV",
-  PCP: "PCP",
-  REH: "REH",
-  SNO: "SNO",
-  TMN: "TMN",
-  TMX: "TMX",
+  TMP: "TMP", // 1시간 기온
+  UUU: "UUU", // 풍속(동서)
+  VVV: "VVV", // 풍속(남북)
+  VEC: "VEC", // 풍향
+  WSD: "WSD", // 풍속
+  SKY: "SKY", // 하늘 상태
+  PTY: "PTY", // 강수 상태
+  POP: "POP", // 강수확률
+  WAV: "WAV", // 파고
+  PCP: "PCP", // 강수량
+  REH: "REH", // 습도
+  SNO: "SNO", // 눈량
+  TMN: "TMN", // 일 최저기온
+  TMX: "TMX", // 일 최고기온
 } as const;
 
 export const CURRENT_WEATHER_CATEGORY_CODE = {
-  T1H: "T1H",
-  RN1: "RN1",
-  REH: "REH",
-  PTY: "PTY",
-  WSD: "WSD",
-  VEC: "VEC",
-  UUU: "UUU",
-  VVV: "VVV",
+  T1H: "T1H", // 기온
+  RN1: "RN1", // 1시간 강수량
+  REH: "REH", // 습도
+  PTY: "PTY", // 강수형태
+  WSD: "WSD", // 풍속
+  VEC: "VEC", // 풍향
+  UUU: "UUU", // 풍속(동서)
+  VVV: "VVV", // 풍속(남북)
 } as const;
 
 export const SKY_CODE = {

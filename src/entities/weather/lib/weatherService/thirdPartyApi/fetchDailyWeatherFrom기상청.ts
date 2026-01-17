@@ -20,7 +20,7 @@ const ROWS_PER_HOUR = 12;
 /**
  * 단기예보 조회
  */
-export async function fetchHourlyWeatherFrom기상청(params: GetVilageFcstParams) {
+export async function fetchDailyWeatherFrom기상청(params: GetVilageFcstParams) {
   const { baseDate, baseTime, gridCoordinate } = params;
 
   const url = new QueryStringBuilder(FORECAST_API_BASE_URL, "/getVilageFcst")

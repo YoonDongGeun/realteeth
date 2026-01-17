@@ -1,4 +1,4 @@
-import type { CurrentWeather, HourlyWeather, WeatherCondition } from "../../../model/types";
+import type { CurrentWeather, HourlyWeather, WeatherCondition, DailyWeather } from "../../../model/types";
 import {
   CATEGORY_CODE,
   CURRENT_WEATHER_CATEGORY_CODE,
@@ -11,9 +11,32 @@ import {
 import { localDayjs } from "@shared/lib";
 
 /** 기상청 API 응답을 내부 도메인 모델로 변환 */
-export function 단기예보데이터ToHourlyWeather(items: 단기예보데이터[]): HourlyWeather[] {
+export function 단기예보데이터ToDailyWeather(items: 단기예보데이터[]): DailyWeather {
   const groupedByDateTime = groupByDateTime(items);
-  return extractHourlyWeather(groupedByDateTime);
+  const hourly = extractHourlyWeather(groupedByDateTime);
+
+  const minTemperature = Math.min(...hourly.map((h) => h.temperature));
+  const maxTemperature = Math.max(...hourly.map((h) => h.temperature));
+  const precipitationProbability = Math.max(...hourly.map((h) => h.precipitationProbability));
+
+  // 날씨 상태 우선순위: 눈 > 진눈깨비 > 비 > 흐림 > 구름조금 > 맑음
+  const conditions = hourly.map((h) => h.condition);
+  let condition: WeatherCondition = "clear";
+
+  if (conditions.includes("snow")) condition = "snow";
+  else if (conditions.includes("sleet")) condition = "sleet";
+  else if (conditions.includes("rain")) condition = "rain";
+  else if (conditions.includes("cloudy")) condition = "cloudy";
+  else if (conditions.includes("partly_cloudy")) condition = "partly_cloudy";
+
+  return {
+    date: hourly[0]?.time.format("YYYY-MM-DD") ?? localDayjs().format("YYYY-MM-DD"),
+    minTemperature: isFinite(minTemperature) ? minTemperature : 0,
+    maxTemperature: isFinite(maxTemperature) ? maxTemperature : 0,
+    precipitationProbability: isFinite(precipitationProbability) ? precipitationProbability : 0,
+    condition,
+    hourly,
+  };
 }
 
 /**

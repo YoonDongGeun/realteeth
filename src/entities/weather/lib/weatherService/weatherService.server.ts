@@ -1,24 +1,24 @@
-import type { CurrentWeather, HourlyWeather } from "../../model/types";
+import type { CurrentWeather, DailyWeather } from "../../model/types";
 
-import { 단기예보데이터ToHourlyWeather, 실시간예보데이터ToCurrentWeather } from "./thirdPartyApi/weather.adapter";
+import { 단기예보데이터ToDailyWeather, 실시간예보데이터ToCurrentWeather } from "./thirdPartyApi/weather.adapter";
 import { localDayjs } from "@shared/lib";
-import { fetchHourlyWeatherFrom기상청 } from "./thirdPartyApi/fetchHourlyWeatherFrom기상청";
+import { fetchDailyWeatherFrom기상청 } from "./thirdPartyApi/fetchDailyWeatherFrom기상청";
 import { fetchCurrentWeatherFrom기상청 } from "./thirdPartyApi/fetchCurrentWeatherFrom기상청";
 import { convertToGrid } from "./thirdPartyApi/utils/coordinatesToGrid";
 import { Coordinate } from "@shared/model";
 
-async function fetchHourlyWeatherByCoordinates(coordinate: Coordinate): Promise<HourlyWeather[]> {
+async function fetchDailyWeatherByCoordinates(coordinate: Coordinate): Promise<DailyWeather> {
   // WGS84 좌표 → 기상청 격자 좌표 변환
   const gridCoordinate = convertToGrid(coordinate);
   const { date, time } = getBaseTimeForCurrentWeather();
 
-  const res = await fetchHourlyWeatherFrom기상청({
+  const res = await fetchDailyWeatherFrom기상청({
     baseDate: date,
     baseTime: time,
     gridCoordinate,
   });
 
-  return 단기예보데이터ToHourlyWeather(res);
+  return 단기예보데이터ToDailyWeather(res);
 }
 
 async function fetchCurrentWeatherByCoordinates(coordinate: Coordinate): Promise<CurrentWeather> {
@@ -66,6 +66,6 @@ export function getBaseTimeForCurrentWeather(): { date: string; time: string } {
 }
 
 export const weatherService = {
-  fetchHourlyWeatherByCoordinates, // 오늘 시간당 날씨
+  fetchDailyWeatherByCoordinates, // 오늘 시간당 날씨
   fetchCurrentWeatherByCoordinates, // 현재 날씨
 } as const;
