@@ -1,8 +1,8 @@
 import { ApiResponse, CoordinateSchema, CoordinateString, ParcelAddress } from "@shared/types";
 import { NextRequest, NextResponse } from "next/server";
-import { HourlyWeather } from "../model/types";
 import { geocoder } from "@shared/lib/geocoder";
 import { weatherService } from "@entities/weather/lib";
+import { FetchWeatherHourlyResponse } from "./fetchWeatherHourly ";
 
 export type WeatherHourlyApiSearchParams = {
   address?: ParcelAddress;
@@ -21,7 +21,7 @@ export async function weatherHourlyApiRoute(request: NextRequest) {
 
   const res = await weatherService.fetchHourlyWeatherByCoordinates(coordinate);
 
-  return NextResponse.json<ApiResponse<HourlyWeather[]>>({ data: res }, { status: 200 });
+  return NextResponse.json<FetchWeatherHourlyResponse>({ data: res }, { status: 200 });
 }
 
 function parseParams(params: URLSearchParams): WeatherHourlyApiSearchParams {

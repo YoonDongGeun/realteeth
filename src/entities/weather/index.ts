@@ -1,5 +1,5 @@
 export * from "./model/types";
-export { weatherCurrentApiRoute } from "./api/weather-current-api-route.server";
-export { weatherHourlyApiRoute } from "./api/weather-hourly-api-route.server";
-export { fetchWeatherCurrent } from "./api/fetchWeatherCurrent";
-export { fetchWeatherHourly } from "./api/fetchWeatherHourly ";
+export { weatherCurrentApiRoute } from "./api/fetchWeatherCurrent/weather-current-api-route.server";
+export { weatherHourlyApiRoute } from "./api/fetchWeatherHourly/weather-hourly-api-route.server";
+export { fetchWeatherCurrent } from "./api/fetchWeatherCurrent/fetchWeatherCurrent";
+export { fetchWeatherHourly } from "./api/fetchWeatherHourly/fetchWeatherHourly ";

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { geocoder } from "@shared/lib/geocoder";
 import { weatherService } from "@entities/weather/lib";
-import { CurrentWeather } from "../model/types";
+import { FetchWeatherCurrentResponse } from "./fetchWeatherCurrent";
 
 export type WeatherCurrentApiSearchParams = {
   address?: ParcelAddress;
@@ -22,7 +22,7 @@ export async function weatherCurrentApiRoute(request: NextRequest) {
 
   const res = await weatherService.fetchCurrentWeatherByCoordinates(coordinate);
 
-  return NextResponse.json<ApiResponse<CurrentWeather>>({ data: res }, { status: 200 });
+  return NextResponse.json<FetchWeatherCurrentResponse>({ data: res }, { status: 200 });
 }
 
 function parseParams(params: URLSearchParams): WeatherCurrentApiSearchParams {

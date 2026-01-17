@@ -1,12 +1,12 @@
 import { apiClient } from "@shared/api";
-import { Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/types";
-import { HourlyWeather } from "../model/types";
+import { ApiResponse, Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/types";
+import { HourlyWeather } from "../../model/types";
 import { WeatherHourlyApiSearchParams } from "./weather-hourly-api-route.server";
 type Props = { address?: ParcelAddress; coordinate?: Coordinate };
 
 type QueryString = WeatherHourlyApiSearchParams;
 
-type Response = HourlyWeather;
+export type FetchWeatherHourlyResponse = ApiResponse<HourlyWeather[]>;
 export const fetchWeatherHourly = async ({ address, coordinate }: Props) => {
   const coordinateString = coordinate ? coordinateToStringSchema.parse(coordinate) : undefined;
 
@@ -14,7 +14,7 @@ export const fetchWeatherHourly = async ({ address, coordinate }: Props) => {
     address,
     coordinate: coordinateString,
   };
-  return await apiClient.get<Response>("/api/weather-hourly", {
+  return await apiClient.get<FetchWeatherHourlyResponse>("/api/weather-hourly", {
     params,
   });
 };
