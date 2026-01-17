@@ -73,13 +73,13 @@ export function Autocomplete({
 
   return (
     <Combobox value={value} onChange={onChange}>
-      <div className="relative">
+      <div className="relative w-full">
         <ComboboxInput
           className={cn(
             "w-full rounded-lg border-2 border-neutral-300 bg-background",
-            "px-4 py-2.5 text-base font-medium text-foreground",
+            "px-4 py-2.5 text-base text-foreground",
             "placeholder:text-neutral-400",
-            "focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/30",
+            "focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500/30",
             "transition-all"
           )}
           displayValue={(option: AutocompleteOption | null) => option?.label ?? ""}
@@ -94,9 +94,9 @@ export function Autocomplete({
         <ComboboxOptions
           className={cn(
             "absolute z-10 mt-2 w-full",
-            "max-h-60 overflow-auto",
+            "max-h-120 overflow-auto",
             "rounded-lg border-2 border-neutral-200 bg-background",
-            "py-1 shadow-xl",
+            "py-1 shadow-lg",
             "empty:hidden"
           )}
         >
@@ -110,7 +110,7 @@ export function Autocomplete({
                 className={({ focus }) =>
                   cn(
                     "cursor-pointer px-4 py-2.5",
-                    "text-base font-medium transition-colors",
+                    "font-medium transition-colors",
                     focus ? "bg-primary-500 text-white" : "text-foreground hover:bg-neutral-100"
                   )
                 }
