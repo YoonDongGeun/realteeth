@@ -1,4 +1,4 @@
-import { Coordinate } from "@shared/types";
+import { Coordinate } from "@shared/model";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

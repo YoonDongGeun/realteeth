@@ -1,5 +1,5 @@
 import "server-only";
-import { Coordinate, coordinateToStringSchema } from "@shared/types";
+import { Coordinate, coordinateToStringSchema } from "@shared/model";
 import { QueryStringBuilder } from "../../../query-builder";
 import { AddressType, CoordinateSystem, VWorldAddressItem, VWorldApiResponse } from "./type";
 

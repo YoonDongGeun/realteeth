@@ -1,4 +1,4 @@
-import { Coordinate } from "@shared/types";
+import { Coordinate } from "@shared/model";
 
 type Response = {
   lat: number;

@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useCallback } from "react";
-import { useLocationStore } from "@shared/lib";
+
 import { isDistanceExceeded } from "@shared/utils";
-import { Coordinate } from "@shared/types";
+import { Coordinate, useLocationStore } from "@shared/model";
 import { fetchMyLocation } from "../../entities/location/api/fetchMyLocation/fetchMyLocation";
 
 export function GPSLocationProvider() {

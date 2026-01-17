@@ -2,7 +2,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import Fuse, { FuseResultMatch, IFuseOptions } from "fuse.js";
 import KOREA_DISTRICTS_DATA from "../korea_districts.json";
 import { normalizeHangul } from "@shared/lib";
-import { ParcelAddress } from "@shared/types";
+import { ParcelAddress } from "@shared/model";
 
 export interface AddressSearchResult {
   fullName: ParcelAddress;

@@ -1,4 +1,4 @@
-import { ApiResponse, CoordinateSchema, CoordinateString, ParcelAddress } from "@shared/types";
+import { ApiResponse, CoordinateSchema, CoordinateString, ParcelAddress } from "@shared/model";
 import { NextRequest, NextResponse } from "next/server";
 
 import { geocoder } from "@shared/lib/geocoder";

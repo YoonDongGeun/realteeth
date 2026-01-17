@@ -1,4 +1,4 @@
-import { Coordinate } from "@shared/types";
+import { Coordinate } from "@shared/model";
 import { GridCoordinate } from "../types";
 
 /** 기상청 격자 좌표 변환 상수 */

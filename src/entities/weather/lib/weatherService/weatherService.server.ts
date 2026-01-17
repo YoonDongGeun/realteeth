@@ -5,7 +5,7 @@ import { localDayjs } from "@shared/lib";
 import { fetchHourlyWeatherFrom기상청 } from "./thirdPartyApi/fetchHourlyWeatherFrom기상청";
 import { fetchCurrentWeatherFrom기상청 } from "./thirdPartyApi/fetchCurrentWeatherFrom기상청";
 import { convertToGrid } from "./thirdPartyApi/utils/coordinatesToGrid";
-import { Coordinate } from "@shared/types";
+import { Coordinate } from "@shared/model";
 
 async function fetchHourlyWeatherByCoordinates(coordinate: Coordinate): Promise<HourlyWeather[]> {
   // WGS84 좌표 → 기상청 격자 좌표 변환

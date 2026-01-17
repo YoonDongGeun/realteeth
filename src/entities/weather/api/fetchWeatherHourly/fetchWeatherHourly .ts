@@ -1,5 +1,5 @@
 import { apiClient } from "@shared/api";
-import { ApiResponse, Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/types";
+import { ApiResponse, Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/model";
 import { HourlyWeather } from "../../model/types";
 import { WeatherHourlyApiSearchParams } from "./weather-hourly-api-route.server";
 type Props = { address?: ParcelAddress; coordinate?: Coordinate };

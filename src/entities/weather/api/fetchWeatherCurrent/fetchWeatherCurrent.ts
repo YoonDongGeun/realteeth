@@ -1,4 +1,4 @@
-import { ApiResponse, Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/types";
+import { ApiResponse, Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/model";
 import { CurrentWeather } from "../../model/types";
 import { apiClient } from "@shared/api";
 import { WeatherCurrentApiSearchParams } from "./weather-current-api-route.server";

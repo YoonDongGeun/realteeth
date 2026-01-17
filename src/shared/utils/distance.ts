@@ -1,4 +1,4 @@
-import { Coordinate } from "@shared/types";
+import { Coordinate } from "@shared/model";
 
 function calculateDistance(coord1: Coordinate, coord2: Coordinate): number {
   const R = 6371e3; // 지구 반지름 (미터)

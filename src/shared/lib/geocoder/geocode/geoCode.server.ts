@@ -1,7 +1,7 @@
 import "server-only";
 import Fuse from "fuse.js";
 import ADDRESS_COORDINATES_DATA from "./addressCoordinates.json";
-import { Coordinate } from "@shared/types";
+import { Coordinate } from "@shared/model";
 
 /** @param address - "서울특별시 종로구 청운효자동", "경상남도 의령군 궁류면 평촌리" */
 export function geoCode(address: string): Coordinate {

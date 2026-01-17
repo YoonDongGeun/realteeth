@@ -1,6 +1,6 @@
 import { localDayjs } from "@shared/lib";
 import { geocoder } from "@shared/lib/geocoder";
-import { Coordinate, CoordinateSchema } from "@shared/types";
+import { Coordinate, CoordinateSchema } from "@shared/model";
 import { NextRequest, NextResponse } from "next/server";
 import { ipLocationConvertService } from "../../lib";
 import { MyLocationApiResponse, MyLocationApiSearchParams } from "./fetchMyLocation";

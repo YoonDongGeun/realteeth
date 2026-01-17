@@ -1,4 +1,4 @@
-import { ApiResponse, Coordinate, ParcelAddress } from "@shared/types";
+import { ApiResponse, Coordinate, ParcelAddress } from "@shared/model";
 
 import { QueryStringBuilder } from "@shared/lib";
 export type MyLocationApiResponse = ApiResponse<{
