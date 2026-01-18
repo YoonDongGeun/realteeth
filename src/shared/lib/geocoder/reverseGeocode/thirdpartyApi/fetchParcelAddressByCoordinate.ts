@@ -1,17 +1,16 @@
-import "server-only";
 import { Coordinate, coordinateToStringSchema } from "@shared/model";
 import { QueryStringBuilder } from "../../../query-builder";
 import { AddressType, CoordinateSystem, VWorldAddressItem, VWorldApiResponse } from "./type";
 
 const API_BASE_URL = "https://api.vworld.kr/req/address";
 
-const API_KEY = (() => {
+const getApiKey = () => {
   const apiKey = process.env.VWORLD_API_KEY;
   if (!apiKey) {
     throw new Error("VWORLD_API_KEY is not defined in environment variables");
   }
   return apiKey;
-})();
+};
 
 export const fetchParcelAddressByCoordinate = async (coordinate: Coordinate) => {
   const coordType: CoordinateSystem = "EPSG:4326"; // 기상청이 쓰는 좌표계
@@ -21,7 +20,7 @@ export const fetchParcelAddressByCoordinate = async (coordinate: Coordinate) => 
       service: "address",
       request: "getaddress",
       version: "2.0",
-      key: API_KEY,
+      key: getApiKey(),
       format: "json",
       errorformat: "json",
       type: addressType,
