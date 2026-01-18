@@ -1,0 +1,4 @@
+{
+  "tailwindCSS.classAttributes": ["class", "className", "style"],
+  "tailwindCSS.classFunctions": ["cva", "cx", "tw", "tw.color", "tw.style"]
+}
