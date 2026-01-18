@@ -37,13 +37,34 @@ npm install --global corepack@latest
 corepack enable pnpm
 ```
 
-### 3. 의존성 설치
+### 3. 환경 변수 설정
+
+프로젝트 실행을 위해 API 키 설정이 필요합니다.
+
+```bash
+# .env.example 파일을 .env로 복사
+cp .env.example .env
+```
+
+`.env` 파일을 열어 다음 API 키를 발급받아 입력하세요:
+
+- **KMA_API_KEY**: [기상청 단기예보 API](https://www.data.go.kr/data/15084084/openapi.do) 인증키
+- **VWORLD_API_KEY**: [브이월드 Reverse Geocoding API](https://www.vworld.kr/dev/v4dv_geocoderguide2_s001.do) 인증키
+
+```env
+KMA_API_KEY=your_kma_api_key_here
+VWORLD_API_KEY=your_vworld_api_key_here
+TZ=Asia/Seoul
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+### 4. 의존성 설치
 
 ```bash
 corepack pnpm install
 ```
 
-### 4. 개발 서버 실행
+### 5. 개발 서버 실행
 
 ```bash
 corepack pnpm dev

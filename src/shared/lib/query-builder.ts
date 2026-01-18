@@ -1,5 +1,5 @@
 const getBaseUrl = () => {
-  return process.env.VERCEL ? process.env.NEXT_PUBLIC_BASE_URL!.slice(0, -1) : "http://localhost:3000";
+  return process.env.NEXT_PUBLIC_BASE_URL!;
 };
 
 export class QueryStringBuilder {
