@@ -2,9 +2,9 @@
 
 import { DailyWeather } from "../../model/types";
 import { localDayjs } from "@shared/lib";
-import { Text } from "@shared/ui";
+import { Card, Text } from "@shared/ui";
 import dynamic from "next/dynamic";
-import { PropsWithChildren, ReactNode, Suspense, useMemo } from "react";
+import { ReactNode, Suspense, useMemo } from "react";
 import { DailyWeatherCardSkeleton } from "./DailyWeatherCardSkeleton";
 
 const HourlyWeatherStatistics = dynamic(
@@ -22,7 +22,7 @@ export function DailyWeatherCard({ data }: Props) {
   const formattedDate = useMemo(() => localDayjs(date).format("M월 D일 (ddd)"), [date]);
 
   return (
-    <Layout>
+    <Card className="w-full bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 transition-colors">
       <Header
         title="오늘의 날씨"
         subTitle={formattedDate}
@@ -30,7 +30,7 @@ export function DailyWeatherCard({ data }: Props) {
       />
       <Content maxTemperature={maxTemperature} minTemperature={minTemperature} />
       <HourlyTemperatureChart data={hourly} />
-    </Layout>
+    </Card>
   );
 }
 
@@ -66,11 +66,6 @@ const HeaderBadge = ({ title }: HeaderBadgeProps) => (
   </div>
 );
 
-const Layout = ({ children }: PropsWithChildren) => (
-  <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 transition-colors">
-    {children}
-  </div>
-);
 type ContetProps = {
   maxTemperature: number;
   minTemperature: number;

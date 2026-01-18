@@ -15,7 +15,7 @@ export function CurrentWeatherCard({ data }: Props) {
   const formattedTime = localDayjs(measuredAt).format("A h:mm");
 
   return (
-    <Card className="flex flex-col gap-6">
+    <Card className="w-full bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 transition-colors">
       <Header title="현재 날씨" subtitle={`${formattedTime} 기준`} />
       <Content 온도={temperature} 상태={condition} />
       <Footer 습도={humidity} 풍속={windSpeed} 강수량={precipitation} />

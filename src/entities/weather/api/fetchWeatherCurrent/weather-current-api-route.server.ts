@@ -1,5 +1,5 @@
 "use server";
-import { ApiResponse, Coordinate, ParcelAddress } from "@shared/model";
+import { ApiResponse, ParcelAddress } from "@shared/model";
 import { NextRequest, NextResponse } from "next/server";
 import { cacheLife, cacheTag } from "next/cache";
 
@@ -18,9 +18,7 @@ export async function weatherCurrentApiRoute(request: NextRequest) {
     return NextResponse.json<ApiResponse>({ error: "잘못된 파라미터", data: null }, { status: 400 });
   }
 
-  const coordinate = geocoder.geoCode(address);
-
-  const res = await fetchCurrentWeatherByCoordinates(coordinate);
+  const res = await fetchCurrentWeatherByAddress(address);
 
   return NextResponse.json<FetchWeatherCurrentResponseDTO>({ data: res }, { status: 200 });
 }
@@ -31,10 +29,11 @@ function parseParams(params: URLSearchParams): WeatherCurrentApiSearchParams {
   return { address } as { address: string };
 }
 
-async function fetchCurrentWeatherByCoordinates(coordinate: Coordinate) {
+async function fetchCurrentWeatherByAddress(address: ParcelAddress) {
   "use cache";
+  const coordinate = geocoder.geoCode(address);
   const cacheSeconds = getSecondsUntilNextTenMinutes();
   cacheLife({ revalidate: cacheSeconds, stale: cacheSeconds + 300 });
-  cacheTag("HourlyWeather");
+  cacheTag("HourlyWeather", address);
   return await weatherService.fetchCurrentWeatherByCoordinates(coordinate);
 }

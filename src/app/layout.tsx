@@ -76,7 +76,7 @@ const Header = ({ title, content }: HeaderProps) => (
 );
 
 const MainContentLayout = ({ children }: PropsWithChildren) => (
-  <div className="w-full lg:col-span-2 space-y-6 order-2 lg:order-1">{children}</div>
+  <div className="w-full lg:col-span-2 space-y-6 order-1 lg:order-1">{children}</div>
 );
 
 const SideContentLayout = ({ children }: PropsWithChildren) => (

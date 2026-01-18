@@ -12,7 +12,7 @@ type Props = {
 
 export function WeatherDetail({ address }: Props) {
   return (
-    <Card className="flex flex-col gap-4 w-full mx-auto">
+    <Card className="flex flex-col gap-4 w-full mx-auto transition-colors dark:bg-black">
       <Header title={address}>
         <AddFavoriteButton address={address} />
       </Header>
