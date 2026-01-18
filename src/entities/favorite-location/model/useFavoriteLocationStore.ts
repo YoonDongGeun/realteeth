@@ -7,7 +7,7 @@ const MAX_FAVORITES = 6;
 
 interface FavoriteLocationStore {
   favorites: FavoriteLocation[];
-
+  _hydrated: boolean;
   // Actions
   addFavorite: (location: FavoriteLocation) => boolean;
   removeFavorite: (address: ParcelAddress) => void;
@@ -15,6 +15,7 @@ interface FavoriteLocationStore {
   isFavorite: (address: ParcelAddress) => boolean;
   canAddMore: () => boolean;
   getFavorite: (address: ParcelAddress) => FavoriteLocation | undefined;
+  _setHydrated: (value: boolean) => void;
 }
 
 /**
@@ -26,7 +27,7 @@ export const useFavoriteLocationStore = create<FavoriteLocationStore>()(
   persist(
     (set, get) => ({
       favorites: [],
-
+      _hydrated: false,
       addFavorite: (location) => {
         const { favorites } = get();
 
@@ -67,9 +68,17 @@ export const useFavoriteLocationStore = create<FavoriteLocationStore>()(
       getFavorite: (address) => {
         return get().favorites.find((fav) => fav.address === address);
       },
+      _setHydrated: (value) => {
+        set(() => ({
+          _hydrated: value,
+        }));
+      },
     }),
     {
       name: "favorite-locations",
+      onRehydrateStorage: () => (state) => {
+        state?._setHydrated(true);
+      },
     }
   )
 );

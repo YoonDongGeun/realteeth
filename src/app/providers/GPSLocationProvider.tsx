@@ -1,12 +1,11 @@
 "use client";
 import { useEffect, useRef, useCallback } from "react";
 
-import { isDistanceExceeded } from "@shared/utils";
 import { Coordinate, useLocationStore } from "@shared/model";
 import { fetchMyLocation } from "../../entities/location/api/fetchMyLocation/fetchMyLocation";
 
 export function GPSLocationProvider() {
-  const { address, coordinate, setAddress, setCoordinate } = useLocationStore();
+  const { setLocation } = useLocationStore();
   const gpsCoordinatesRef = useRef<Coordinate | null>(null);
   const isPermittedRef = useRef<boolean | null>(null);
   const isInitialFetch = useRef(true);
@@ -17,18 +16,16 @@ export function GPSLocationProvider() {
       try {
         const data = await fetchMyLocation(coordinate);
         if (data.data) {
-          setAddress({
-            name: data.data.address,
+          setLocation({
+            address: data.data.address,
             updatedAt: data.data.updatedAt,
           });
-          if (!coordinate) return;
-          setCoordinate(coordinate);
         }
       } catch (error) {
         console.error("위치 정보 업데이트 실패:", error);
       }
     },
-    [setAddress, setCoordinate]
+    [setLocation]
   );
 
   // GPS 위치 가져오기
@@ -45,12 +42,6 @@ export function GPSLocationProvider() {
 
       gpsCoordinatesRef.current = newCoords;
       isPermittedRef.current = true;
-      const savedCoord = coordinate;
-
-      // 저장된 위치가 없거나, 500m 이상 이동한 경우 업데이트
-      if (!address || !savedCoord || isDistanceExceeded(savedCoord, newCoords, 500)) {
-        updateLocation(newCoords);
-      }
     };
 
     const onGPSFail = (err: GeolocationPositionError) => {
@@ -68,35 +59,50 @@ export function GPSLocationProvider() {
       timeout: 7 * 1000,
       maximumAge: 60 * 1000,
     });
-  }, [address, coordinate, updateLocation]);
+  }, [updateLocation]);
 
-  // 권한 변경 감지
+  // 권한 변경 감지 후 켜지면 위치 업데이트
   const watchPermission = useCallback(() => {
     if (!("permissions" in navigator)) {
       return;
     }
 
+    let permissionStatus: PermissionStatus | null = null;
+
+    const handlePermissionChange = () => {
+      if (permissionStatus?.state === "granted") {
+        fetchGPSLocation();
+      } else if (permissionStatus?.state === "denied") {
+        gpsCoordinatesRef.current = null;
+        isPermittedRef.current = false;
+      }
+    };
+
     navigator.permissions
       .query({ name: "geolocation" as PermissionName })
-      .then((permissionStatus) => {
-        permissionStatus.addEventListener("change", () => {
-          if (permissionStatus.state === "granted") {
-            fetchGPSLocation();
-          } else if (permissionStatus.state === "denied") {
-            gpsCoordinatesRef.current = null;
-            isPermittedRef.current = false;
-          }
-        });
+      .then((status) => {
+        permissionStatus = status;
+        permissionStatus.addEventListener("change", handlePermissionChange);
       })
       .catch((error) => {
         console.log("Permissions API 조회 실패:", error);
       });
+
+    // ✅ Cleanup 함수 반환 - 메모리 누수 방지
+    return () => {
+      if (permissionStatus) {
+        permissionStatus.removeEventListener("change", handlePermissionChange);
+      }
+    };
   }, [fetchGPSLocation]);
 
   // 초기화
   useEffect(() => {
     fetchGPSLocation();
-    watchPermission();
+    const cleanup = watchPermission();
+
+    // ✅ cleanup 함수 실행
+    return cleanup;
   }, [fetchGPSLocation, watchPermission]);
 
   return null;

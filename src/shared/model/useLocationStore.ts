@@ -1,21 +1,19 @@
-import { Coordinate } from "@shared/model";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type Address = {
-  name: string;
+type Location = {
+  address: string;
   updatedAt: string; // ISO 8601 형식
 } | null;
 
 interface LocationStore {
   // 위치 정보 (localStorage 저장)
-  address: Address;
-  coordinate: Coordinate | null;
-
+  location: Location;
+  _rehydrated: boolean;
   // Actions
-  setAddress: (address: Address) => void;
-  clearAddress: () => void;
-  setCoordinate: (coordinate: Coordinate) => void;
+  setLocation: (location: Location) => void;
+  clearLocation: () => void;
+  _setRehydrated: (rehydrated: boolean) => void;
 }
 
 /**
@@ -25,23 +23,25 @@ interface LocationStore {
 export const useLocationStore = create<LocationStore>()(
   persist(
     (set) => ({
-      address: null,
-      coordinate: null,
+      location: null,
+      _rehydrated: false,
 
-      setAddress: (address) => {
-        set({ address });
+      setLocation: (location) => {
+        set({ location });
       },
 
-      clearAddress: () => {
-        set({ address: null });
+      clearLocation: () => {
+        set({ location: null });
       },
-
-      setCoordinate: (coordinate) => {
-        set({ coordinate });
+      _setRehydrated: (rehydrated) => {
+        set({ _rehydrated: rehydrated });
       },
     }),
     {
       name: "location-storage",
+      onRehydrateStorage: () => (state) => {
+        state?._setRehydrated(true);
+      },
     }
   )
 );
