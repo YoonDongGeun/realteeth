@@ -2,7 +2,6 @@
 
 import { Card, Text } from "@shared/ui";
 import { CurrentWeather, WeatherCondition } from "../../model/types";
-import { localDayjs } from "@shared/lib";
 import { CurrentWeatherCardSkeleton } from "./CurrentWeatherCardSkeleton";
 
 type Props = {
@@ -10,13 +9,11 @@ type Props = {
 };
 
 export function CurrentWeatherCard({ data }: Props) {
-  const { temperature, condition, humidity, windSpeed, precipitation, measuredAt } = data;
-
-  const formattedTime = localDayjs(measuredAt).format("A h:mm");
+  const { temperature, condition, humidity, windSpeed, precipitation } = data;
 
   return (
     <Card className="w-full bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 transition-colors">
-      <Header title="현재 날씨" subtitle={`${formattedTime} 기준`} />
+      <Header title="현재 날씨" />
       <Content 온도={temperature} 상태={condition} />
       <Footer 습도={humidity} 풍속={windSpeed} 강수량={precipitation} />
     </Card>
@@ -27,15 +24,13 @@ CurrentWeatherCard.Skeleton = CurrentWeatherCardSkeleton;
 
 type HeaderProps = {
   title: string;
-  subtitle: string;
 };
-const Header = ({ title, subtitle }: HeaderProps) => {
+const Header = ({ title }: HeaderProps) => {
   return (
     <div className="flex justify-between items-center">
       <Text variant="h5" weight="semibold" as="h3">
         {title}
       </Text>
-      <Text variant="caption">{subtitle}</Text>
     </div>
   );
 };

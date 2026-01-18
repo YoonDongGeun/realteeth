@@ -71,10 +71,10 @@ const MaxAndMinTemperatures = ({ address }: { address: ParcelAddress }) => {
   return (
     <div className="flex items-center gap-1">
       <Text variant="caption" color="muted">
-        최고 {maxTemp ? Math.round(maxTemp) : "-"}°
+        최고 {maxTemp != null ? Math.round(maxTemp) : "-"}°
       </Text>
       <Text variant="caption" color="muted">
-        최저 {minTemp ? Math.round(minTemp) : "-"}°
+        최저 {minTemp != null ? Math.round(minTemp) : "-"}°
       </Text>
     </div>
   );

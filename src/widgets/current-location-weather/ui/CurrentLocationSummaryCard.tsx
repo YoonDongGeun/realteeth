@@ -1,10 +1,10 @@
 "use client";
 
 import { ParcelAddress, useLocationStore } from "@shared/model";
-import { useCurrentWeather } from "@entities/weather";
+import { useCurrentWeather, useDailyWeather } from "@entities/weather";
 import { useRouter } from "next/navigation";
 import { Suspense, useCallback } from "react";
-import { Card } from "@shared/ui";
+import { Card, Text } from "@shared/ui";
 
 export function CurrentLocationSummaryCard() {
   const { location } = useLocationStore();
@@ -33,9 +33,14 @@ export function CurrentLocationSummaryCard() {
     >
       <Card className="p-4 bg-blue-500 dark:bg-blue-600 text-white flex hover:bg-blue-600 dark:hover:bg-blue-700 justify-between items-center cursor-pointer transition-all">
         <Header address={location?.address} />
-        <Suspense fallback={<div className="h-8 w-12 bg-white/20 rounded animate-pulse" aria-hidden="true" />}>
-          <CurrentLocationTemp address={location?.address || "서울특별시"} />
-        </Suspense>
+        <div>
+          <Suspense fallback={<div className="h-8 w-12 bg-white/20 rounded animate-pulse" aria-hidden="true" />}>
+            <CurrentLocationTemp address={location?.address || "서울특별시"} />
+          </Suspense>
+          <Suspense fallback={<div className="h-4 w-8 bg-white/20 rounded animate-pulse" aria-hidden="true" />}>
+            <MaxAndMinTemperatures address={location?.address || "서울특별시"} />
+          </Suspense>
+        </div>
       </Card>
     </article>
   );
@@ -59,3 +64,19 @@ function CurrentLocationTemp({ address }: { address: ParcelAddress }) {
     </div>
   );
 }
+
+const MaxAndMinTemperatures = ({ address }: { address: ParcelAddress }) => {
+  const dailyWeather = useDailyWeather(address);
+  const maxTemp = dailyWeather.data.maxTemperature;
+  const minTemp = dailyWeather.data.minTemperature;
+  return (
+    <div className="flex items-center gap-1">
+      <Text variant="caption" color="inherit">
+        최고 {maxTemp != null ? Math.round(maxTemp) : "-"}°
+      </Text>
+      <Text variant="caption" color="inherit">
+        최저 {minTemp != null ? Math.round(minTemp) : "-"}°
+      </Text>
+    </div>
+  );
+};

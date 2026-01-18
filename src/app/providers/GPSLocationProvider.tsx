@@ -3,9 +3,14 @@ import { useEffect, useRef, useCallback } from "react";
 
 import { Coordinate, useLocationStore } from "@shared/model";
 import { fetchMyLocation } from "../../entities/location/api/fetchMyLocation/fetchMyLocation";
+import { useMutation } from "@tanstack/react-query";
 
 export function GPSLocationProvider() {
   const { setLocation } = useLocationStore();
+  const { mutateAsync: getMyLocation } = useMutation({
+    mutationKey: ["location"],
+    mutationFn: fetchMyLocation,
+  });
   const gpsCoordinatesRef = useRef<Coordinate | null>(null);
   const isPermittedRef = useRef<boolean | null>(null);
   const isInitialFetch = useRef(true);
@@ -14,7 +19,7 @@ export function GPSLocationProvider() {
   const updateLocation = useCallback(
     async (coordinate: Coordinate | null) => {
       try {
-        const data = await fetchMyLocation(coordinate);
+        const data = await getMyLocation(coordinate);
         if (data.data) {
           setLocation({
             address: data.data.address,
@@ -25,7 +30,7 @@ export function GPSLocationProvider() {
         console.error("위치 정보 업데이트 실패:", error);
       }
     },
-    [setLocation]
+    [setLocation, getMyLocation]
   );
 
   // GPS 위치 가져오기
@@ -87,8 +92,6 @@ export function GPSLocationProvider() {
       .catch((error) => {
         console.log("Permissions API 조회 실패:", error);
       });
-
-    // ✅ Cleanup 함수 반환 - 메모리 누수 방지
     return () => {
       if (permissionStatus) {
         permissionStatus.removeEventListener("change", handlePermissionChange);
@@ -96,12 +99,10 @@ export function GPSLocationProvider() {
     };
   }, [fetchGPSLocation]);
 
-  // 초기화
   useEffect(() => {
     fetchGPSLocation();
     const cleanup = watchPermission();
 
-    // ✅ cleanup 함수 실행
     return cleanup;
   }, [fetchGPSLocation, watchPermission]);
 
