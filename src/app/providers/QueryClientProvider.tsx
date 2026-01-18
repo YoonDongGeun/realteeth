@@ -7,7 +7,7 @@ export function QueryClientProvider({ children }: PropsWithChildren) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000, // 1분
+            staleTime: 60 * 5000, // 5분
             gcTime: 5 * 60 * 1000, // 5분
             refetchOnWindowFocus: false,
             retry: 2,
