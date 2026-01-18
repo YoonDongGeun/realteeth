@@ -5,7 +5,7 @@ import { ComponentPropsWithoutRef, createElement } from "react";
 import { cn } from "@shared/utils";
 
 const textVariants = cva({
-  base: "text-foreground",
+  base: "",
   variants: {
     variant: {
       h1: "text-3xl font-bold sm:text-4xl md:text-5xl",
@@ -16,8 +16,7 @@ const textVariants = cva({
       h6: "text-sm font-semibold sm:text-base md:text-lg",
       body: "text-sm sm:text-base",
       small: "text-xs sm:text-sm",
-      caption: "text-xs text-neutral-500",
-      muted: "text-sm text-neutral-400 sm:text-base",
+      caption: "text-xs",
     },
     weight: {
       light: "font-light",
@@ -31,10 +30,21 @@ const textVariants = cva({
       center: "text-center",
       right: "text-right",
     },
+    color: {
+      default: "text-zinc-900 dark:text-zinc-50",
+      muted: "text-zinc-600 dark:text-zinc-400",
+      subtle: "text-zinc-500 dark:text-zinc-500",
+      primary: "text-blue-600 dark:text-blue-400",
+      success: "text-green-600 dark:text-green-400",
+      warning: "text-amber-600 dark:text-amber-400",
+      danger: "text-red-600 dark:text-red-400",
+      inherit: "text-inherit",
+    },
   },
   defaultVariants: {
     variant: "body",
     align: "left",
+    color: "default",
   },
 });
 
@@ -44,11 +54,11 @@ export interface TextProps extends Omit<ComponentPropsWithoutRef<"p">, "color">,
   as?: TextElement;
 }
 
-export function Text({ className, variant, weight, align, as, ...props }: TextProps) {
+export function Text({ className, variant, weight, align, color, as, ...props }: TextProps) {
   const element = as || (variant?.startsWith("h") ? (variant as TextElement) : "p");
 
   return createElement(element, {
-    className: cn(textVariants({ variant, weight, align }), className),
+    className: cn(textVariants({ variant, weight, align, color }), className),
     ...props,
   });
 }

@@ -3,6 +3,7 @@
 import { Input as HeadlessInput, InputProps as HeadlessInputProps } from "@headlessui/react";
 import { cva, type VariantProps } from "cva";
 import { cn } from "@shared/utils";
+import { RefObject } from "react";
 
 const inputVariants = cva({
   base: "w-full rounded-lg border-2 font-medium transition-all text-foreground placeholder:text-neutral-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
@@ -23,10 +24,12 @@ const inputVariants = cva({
   },
 });
 
-type InputVariantProps = VariantProps<typeof inputVariants>;
+type InputVariantProps = VariantProps<typeof inputVariants> & {
+  ref: RefObject<HTMLInputElement | null>;
+};
 
 export interface InputProps extends Omit<HeadlessInputProps, "size">, InputVariantProps {}
 
-export function Input({ className, variant, size, ...props }: InputProps) {
-  return <HeadlessInput className={cn(inputVariants({ variant, size }), className)} {...props} />;
-}
+export const Input = ({ className, variant, size, ref, ...props }: InputProps) => {
+  return <HeadlessInput ref={ref} className={cn(inputVariants({ variant, size }), className)} {...props} />;
+};

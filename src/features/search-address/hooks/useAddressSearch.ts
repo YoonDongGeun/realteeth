@@ -1,6 +1,6 @@
-import { useDeferredValue, useMemo, useState } from "react";
+"use client";
+import { useDeferredValue, useMemo, useState, useEffect } from "react";
 import Fuse, { FuseResultMatch, IFuseOptions } from "fuse.js";
-import KOREA_DISTRICTS_DATA from "../korea_districts.json";
 import { normalizeHangul } from "@shared/lib";
 import { ParcelAddress } from "@shared/model";
 
@@ -16,15 +16,40 @@ const fuseOptions: IFuseOptions<string> = {
   includeMatches: true,
 };
 
+// 클라이언트 파일 버저닝
+const DB_VERSION = "20260118";
+
 export function useAddressSearch(maxResults: number = 10) {
   const [query, setQuery] = useState("");
   const defferedQuery = useDeferredValue(query);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [districtsData, setDistrictsData] = useState<string[]>([]);
 
-  const fuse = useMemo(() => new Fuse(KOREA_DISTRICTS_DATA, fuseOptions), []);
+  // Load data when user starts typing
+  useEffect(() => {
+    if (!isDataLoaded) {
+      fetch(`/data/korea_districts.json?v=${DB_VERSION}`, {
+        cache: "force-cache",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setDistrictsData(data);
+          setIsDataLoaded(true);
+        });
+    }
+  }, [defferedQuery, isDataLoaded]);
+
+  const fuse = useMemo(() => {
+    if (!isDataLoaded || districtsData.length === 0) {
+      return null;
+    }
+    return new Fuse(districtsData, fuseOptions);
+  }, [isDataLoaded, districtsData]);
+
   const results = useMemo<AddressSearchResult[]>(() => {
     const trimmedQuery = defferedQuery.trim();
 
-    if (!trimmedQuery) {
+    if (!trimmedQuery || !fuse) {
       return [];
     }
 
@@ -45,5 +70,6 @@ export function useAddressSearch(maxResults: number = 10) {
     query: defferedQuery,
     setQuery,
     results,
+    isLoading: !isDataLoaded && !!defferedQuery.trim(),
   };
 }

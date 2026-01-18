@@ -1,4 +1,4 @@
-import { KOREA_DISTRICTS_DATA } from "@features/search-address";
+import { KOREA_DISTRICTS_DATA } from "@shared/model";
 
 import { geoCode } from "./geoCode.server";
 

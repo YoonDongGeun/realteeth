@@ -1,4 +1,3 @@
-import "server-only";
 import Fuse from "fuse.js";
 import ADDRESS_COORDINATES_DATA from "./addressCoordinates.json";
 import { Coordinate } from "@shared/model";

@@ -1,21 +1,9 @@
-/**
- * @example
- * const url = new QueryStringBuilder('https://api.example.com', '/data')
- *   .set('key', 'value')
- *   .set('page', 1)
- *   .set('limit', 100)
- *   .build();
- *
- * @example
- * // 체이닝 방식
- * const url = new QueryStringBuilder()
- *   .baseUrl('https://api.example.com')
- *   .endpoint('/data')
- *   .setMany({ key: 'value', page: 1, limit: 100 })
- *   .build();
- */
+const getBaseUrl = () => {
+  return process.env.VERCEL ? process.env.NEXT_PUBLIC_BASE_URL!.slice(0, -1) : "http://localhost:3000";
+};
+
 export class QueryStringBuilder {
-  private base: string = "";
+  private base: string = getBaseUrl();
   private path: string = "";
   private params: Record<string, string | number | boolean> = {};
 

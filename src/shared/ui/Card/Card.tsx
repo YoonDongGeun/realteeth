@@ -1,16 +1,16 @@
 "use client";
 
 import { cva, type VariantProps } from "cva";
-import { ComponentPropsWithoutRef, ReactNode } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@shared/utils";
 
 const cardVariants = cva({
-  base: "rounded-lg bg-background shadow-sm transition-shadow",
+  base: "rounded-3xl bg-background dark:bg-foreground shadow-sm transition-colors",
   variants: {
     variant: {
-      default: "border border-neutral-200",
+      default: "border border-neutral-100",
       elevated: "shadow-md hover:shadow-lg",
-      outlined: "border-2 border-neutral-300",
+      outlined: "border border-neutral-100",
       ghost: "shadow-none border-none",
     },
     padding: {
@@ -27,21 +27,12 @@ const cardVariants = cva({
   },
 });
 
-export interface CardProps extends ComponentPropsWithoutRef<"div">, VariantProps<typeof cardVariants> {
-  header?: ReactNode;
-}
+export interface CardProps extends ComponentPropsWithoutRef<"div">, VariantProps<typeof cardVariants> {}
 
-export function Card({ className, variant, padding, header, children, ...props }: CardProps) {
-  const hasPadding = padding !== "none";
-
+export function Card({ className, variant, padding, children, ...props }: CardProps) {
   return (
-    <div className={cn(cardVariants({ variant, padding: "none" }), className)} {...props}>
-      {header && (
-        <div className={cn("border-b border-neutral-200", hasPadding && "px-4 py-3 sm:px-5 sm:py-4 md:px-6")}>
-          {header}
-        </div>
-      )}
-      {children && <div className={cn(hasPadding && cardVariants({ padding }))}>{children}</div>}
+    <div className={cn(cardVariants({ variant, padding }), className)} {...props}>
+      {children}
     </div>
   );
 }
