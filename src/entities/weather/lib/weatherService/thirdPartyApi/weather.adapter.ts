@@ -1,4 +1,4 @@
-import type { CurrentWeather, HourlyWeather, WeatherCondition, DailyWeather } from "../../../model/types";
+import type { WeatherCondition, DailyWeatherRaw, HourlyWeatherRaw, CurrentWeatherRaw } from "../../../model/types";
 import {
   CATEGORY_CODE,
   CURRENT_WEATHER_CATEGORY_CODE,
@@ -10,11 +10,12 @@ import {
 } from "./types";
 import { localDayjs } from "@shared/lib";
 
-/** 기상청 API 응답을 내부 도메인 모델로 변환 */
-export function 단기예보데이터ToDailyWeather(items: 단기예보데이터[]): DailyWeather {
+/** 기상청 API 응답을 내부 도메인 모델로 변환 (Raw) */
+export function 단기예보데이터ToDailyWeather(items: 단기예보데이터[]): DailyWeatherRaw {
   const groupedByDateTime = groupByDateTime(items);
   const hourly = extractHourlyWeather(groupedByDateTime);
 
+  // Note: calculations like min/max temp are done on raw numbers, which is fine.
   const minTemperature = Math.min(...hourly.map((h) => h.temperature));
   const maxTemperature = Math.max(...hourly.map((h) => h.temperature));
   const precipitationProbability = Math.max(...hourly.map((h) => h.precipitationProbability));
@@ -30,7 +31,7 @@ export function 단기예보데이터ToDailyWeather(items: 단기예보데이터
   else if (conditions.includes("partly_cloudy")) condition = "partly_cloudy";
 
   return {
-    date: hourly[0]?.time.format("YYYY-MM-DD") ?? localDayjs().format("YYYY-MM-DD"),
+    date: hourly[0]?.time ? localDayjs(hourly[0].time).format("YYYY-MM-DD") : localDayjs().format("YYYY-MM-DD"),
     minTemperature: isFinite(minTemperature) ? minTemperature : 0,
     maxTemperature: isFinite(maxTemperature) ? maxTemperature : 0,
     precipitationProbability: isFinite(precipitationProbability) ? precipitationProbability : 0,
@@ -57,8 +58,8 @@ function groupByDateTime(items: 단기예보데이터[]): Map<string, Map<string
 }
 
 /** 시간대별 날씨 추출 (24시간) */
-function extractHourlyWeather(grouped: Map<string, Map<string, string>>): HourlyWeather[] {
-  const hourlyList: HourlyWeather[] = [];
+function extractHourlyWeather(grouped: Map<string, Map<string, string>>): HourlyWeatherRaw[] {
+  const hourlyList: HourlyWeatherRaw[] = [];
   const entries = Array.from(grouped.entries()).slice(0, 24);
 
   for (const [key, data] of entries) {
@@ -73,7 +74,7 @@ function extractHourlyWeather(grouped: Map<string, Map<string, string>>): Hourly
     const condition = getWeatherCondition(skyCode, ptyCode);
 
     hourlyList.push({
-      time: localDayjs(`${fcstDate}${fcstTime}`, "YYYYMMDDHHmm"),
+      time: localDayjs(`${fcstDate}${fcstTime}`, "YYYYMMDDHHmm").toISOString(),
       temperature,
       condition,
       precipitationProbability: precipProb,
@@ -116,7 +117,7 @@ function getWeatherCondition(skyCode: string, ptyCode: string): WeatherCondition
 /**
  * 초단기실황 데이터를 CurrentWeather로 변환
  */
-export function 실시간예보데이터ToCurrentWeather(items: 실시간예보데이터[]): CurrentWeather {
+export function 실시간예보데이터ToCurrentWeather(items: 실시간예보데이터[]): CurrentWeatherRaw {
   const dataMap = new Map<string, string>();
   let baseDate = "";
   let baseTime = "";
@@ -143,7 +144,7 @@ export function 실시간예보데이터ToCurrentWeather(items: 실시간예보�
     windSpeed,
     windDirection,
     precipitation,
-    measuredAt: localDayjs(`${baseDate}${baseTime}`, "YYYYMMDDHHmm"),
+    measuredAt: localDayjs(`${baseDate}${baseTime}`, "YYYYMMDDHHmm").toISOString(),
   };
 }
 

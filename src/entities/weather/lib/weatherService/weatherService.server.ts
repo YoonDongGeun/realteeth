@@ -1,4 +1,4 @@
-import type { CurrentWeather, DailyWeather } from "../../model/types";
+import type { CurrentWeatherRaw, DailyWeatherRaw } from "../../model/types";
 
 import { 단기예보데이터ToDailyWeather, 실시간예보데이터ToCurrentWeather } from "./thirdPartyApi/weather.adapter";
 import { localDayjs } from "@shared/lib";
@@ -7,10 +7,10 @@ import { fetchCurrentWeatherFrom기상청 } from "./thirdPartyApi/fetchCurrentWe
 import { convertToGrid } from "./thirdPartyApi/utils/coordinatesToGrid";
 import { Coordinate } from "@shared/model";
 
-async function fetchDailyWeatherByCoordinates(coordinate: Coordinate): Promise<DailyWeather> {
+async function fetchDailyWeatherByCoordinates(coordinate: Coordinate): Promise<DailyWeatherRaw> {
   // WGS84 좌표 → 기상청 격자 좌표 변환
   const gridCoordinate = convertToGrid(coordinate);
-  const { date, time } = getBaseTimeForCurrentWeather();
+  const { date, time } = getBaseDateTimeForDailyWeather();
 
   const res = await fetchDailyWeatherFrom기상청({
     baseDate: date,
@@ -21,7 +21,7 @@ async function fetchDailyWeatherByCoordinates(coordinate: Coordinate): Promise<D
   return 단기예보데이터ToDailyWeather(res);
 }
 
-async function fetchCurrentWeatherByCoordinates(coordinate: Coordinate): Promise<CurrentWeather> {
+async function fetchCurrentWeatherByCoordinates(coordinate: Coordinate): Promise<CurrentWeatherRaw> {
   // WGS84 좌표 → 기상청 격자 좌표 변환
   const { nx, ny } = convertToGrid(coordinate);
   const { date, time } = getBaseTimeForCurrentWeather();
@@ -39,6 +39,7 @@ async function fetchCurrentWeatherByCoordinates(coordinate: Coordinate): Promise
 /**
  * 초단기실황 API 베이스 타임 계산
  *
+ * ⚠️ 수정 금지
  * 기상청 API는 매시 정각 데이터를 10분 후 반영하므로,
  * HH:00~HH:09 사이에는 이전 시간(HH-1:00) 데이터를 조회합니다.
  * 만약 그냥 조회한다면 데이터 업데이트가 안돼 No Data가 찍힙니다.
@@ -62,6 +63,49 @@ export function getBaseTimeForCurrentWeather(): { date: string; time: string } {
   return {
     date: now.format("YYYYMMDD"),
     time: now.format("HHmm"), // 정각
+  };
+}
+
+/**
+ * ⚠️ 수정 금지
+ * 단기예보(Daily) API 베이스 타임 계산
+ *
+ * Base_time : 0200, 0500, 0800, 1100, 1400, 1700, 2000, 2300 (1일 8회)
+ * API 제공 시간 : Base_time + 10분 뒤 (예: 02:00 데이터는 02:10부터 조회 가능)
+ */
+export function getBaseDateTimeForDailyWeather(): { date: string; time: string } {
+  const now = localDayjs();
+  const currentHour = now.hour();
+  const currentMinute = now.minute();
+
+  // Base times
+  const baseHours = [2, 5, 8, 11, 14, 17, 20, 23];
+
+  // 현재 시간(분 포함)보다 이전에 발표된 가장 최신 Base time 찾기
+  // 예: 02:09 -> 아직 02:00 데이터 안나옴 -> 23:00 (어제)
+  // 예: 02:11 -> 02:00 데이터 나옴 -> 02:00 (오늘)
+
+  let targetDate = now;
+  let targetHour = -1;
+
+  for (let i = baseHours.length - 1; i >= 0; i--) {
+    const baseHour = baseHours[i];
+
+    if (currentHour > baseHour || (currentHour === baseHour && currentMinute >= 10)) {
+      targetHour = baseHour;
+      break;
+    }
+  }
+
+  // 오늘 해당하는 Base time이 없으면 (예: 00:00 ~ 02:09), 어제 23:00 사용
+  if (targetHour === -1) {
+    targetDate = now.subtract(1, "day");
+    targetHour = 23;
+  }
+
+  return {
+    date: targetDate.format("YYYYMMDD"),
+    time: `${targetHour.toString().padStart(2, "0")}00`,
   };
 }
 

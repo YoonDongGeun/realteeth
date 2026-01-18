@@ -1,4 +1,3 @@
-import "server-only";
 import { Coordinate, ParcelAddress } from "@shared/model";
 import { fetchParcelAddressByCoordinate } from "./thirdpartyApi/fetchParcelAddressByCoordinate";
 

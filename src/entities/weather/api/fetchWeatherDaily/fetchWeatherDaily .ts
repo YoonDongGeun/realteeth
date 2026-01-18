@@ -1,20 +1,22 @@
 import { apiClient } from "@shared/api";
-import { ApiResponse, Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/model";
-import { DailyWeather } from "../../model/types";
+import { ApiResponse, ParcelAddress } from "@shared/model";
+import { DailyWeatherSchema } from "../../model/schemas";
 import { WeatherDailyApiSearchParams } from "./weather-daily-api-route.server";
-type Props = { address?: ParcelAddress; coordinate?: Coordinate };
+import z from "zod";
+type Props = { address: ParcelAddress };
 
 type QueryString = WeatherDailyApiSearchParams;
 
-export type FetchWeatherDailyResponse = ApiResponse<DailyWeather>;
-export const fetchWeatherDaily = async ({ address, coordinate }: Props) => {
-  const coordinateString = coordinate ? coordinateToStringSchema.parse(coordinate) : undefined;
-
+export type FetchWeatherDailyResponse = ApiResponse<z.input<typeof DailyWeatherSchema>>;
+export const fetchWeatherDaily = async ({ address }: Props) => {
   const params: QueryString = {
     address,
-    coordinate: coordinateString,
   };
-  return await apiClient.get<FetchWeatherDailyResponse>("/api/weather-daily", {
+  const response = await apiClient.get<FetchWeatherDailyResponse>("/api/weather-daily", {
     params,
   });
+  return {
+    data: response.data,
+    error: response.error,
+  };
 };

@@ -1,21 +1,26 @@
-import { ApiResponse, Coordinate, coordinateToStringSchema, ParcelAddress } from "@shared/model";
-import { CurrentWeather } from "../../model/types";
+import { ApiResponse, ParcelAddress } from "@shared/model";
+
 import { apiClient } from "@shared/api";
 import { WeatherCurrentApiSearchParams } from "./weather-current-api-route.server";
+import z from "zod";
+import { CurrentWeatherSchema } from "../../model/schemas";
 
-type Props = { address?: ParcelAddress; coordinate?: Coordinate };
+type Props = { address: ParcelAddress };
 
-type QueryString = WeatherCurrentApiSearchParams;
+type Params = WeatherCurrentApiSearchParams;
 
-export type FetchWeatherCurrentResponse = ApiResponse<CurrentWeather>;
-export const fetchWeatherCurrent = async ({ address, coordinate }: Props) => {
-  const coordinateString = coordinate ? coordinateToStringSchema.parse(coordinate) : undefined;
+export type FetchWeatherCurrentResponseDTO = ApiResponse<z.input<typeof CurrentWeatherSchema>>;
 
-  const params: QueryString = {
+export const fetchWeatherCurrent = async ({ address }: Props) => {
+  const params: Params = {
     address,
-    coordinate: coordinateString,
   };
-  return await apiClient.get<FetchWeatherCurrentResponse>("/api/weather-current", {
+  const response = await apiClient.get<FetchWeatherCurrentResponseDTO>("/api/weather-current", {
     params,
   });
+
+  return {
+    error: response.error,
+    data: response.data,
+  };
 };
