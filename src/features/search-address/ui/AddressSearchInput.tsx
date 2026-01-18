@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Autocomplete, type AutocompleteOption } from "@shared/ui/Autocomplete";
 import { useAddressSearch } from "../hooks/useAddressSearch";
 
 interface CitySearchInputProps {
-  onSelect: (cityName: string) => void;
+  onSelect?: (cityName: string) => void;
   placeholder?: string;
   maxResults?: number;
 }
@@ -27,10 +28,13 @@ export function AddressSearchInput({
     [results]
   );
 
+  const router = useRouter();
+
   const handleChange = (option: AutocompleteOption | null) => {
     setSelectedOption(option);
     if (option) {
-      onSelect(option.value);
+      router.push(`/search/?q=${option.value}`);
+      if (onSelect) onSelect(option.value); // Keep onSelect for optional backward compatibility or other side effects
     }
   };
 
