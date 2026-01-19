@@ -1,17 +1,17 @@
-"use client";
 import { AddFavoriteButton } from "@features/favorite-location";
 import { ParcelAddress } from "@shared/model";
 import { Card, Text } from "@shared/ui";
 import { PropsWithChildren, Suspense } from "react";
 import { StreamingCurrentWeather, StreamingDailyWeather } from "./StreamingWeather";
-import { CurrentWeatherCardSkeleton, DailyWeatherCardSkeleton } from "@entities/weather";
+import { CurrentWeatherCardSkeleton, DailyWeatherCardSkeleton, weatherQueries } from "@entities/weather";
 import { WeatherDetailSkeleton } from "./WeatherDetailSkeleton";
+import { PrefetchBoundary } from "@shared/lib";
 
 type Props = {
   address: ParcelAddress;
 };
 
-export function WeatherDetailCSR({ address }: Props) {
+export function WeatherDetail({ address }: Props) {
   return (
     <Card className="flex flex-col gap-4 w-full mx-auto transition-colors dark:bg-black">
       <Header title={address}>
@@ -19,17 +19,21 @@ export function WeatherDetailCSR({ address }: Props) {
       </Header>
 
       <Suspense fallback={<CurrentWeatherCardSkeleton />}>
-        <StreamingCurrentWeather address={address} />
+        <PrefetchBoundary prefetchOptions={weatherQueries.current(address)}>
+          <StreamingCurrentWeather address={address} />
+        </PrefetchBoundary>
       </Suspense>
 
       <Suspense fallback={<DailyWeatherCardSkeleton />}>
-        <StreamingDailyWeather address={address} />
+        <PrefetchBoundary prefetchOptions={weatherQueries.daily(address)}>
+          <StreamingDailyWeather address={address} />
+        </PrefetchBoundary>
       </Suspense>
     </Card>
   );
 }
 
-WeatherDetailCSR.Skeleton = WeatherDetailSkeleton;
+WeatherDetail.Skeleton = WeatherDetailSkeleton;
 
 type HeaderProps = PropsWithChildren<{ title: string }>;
 

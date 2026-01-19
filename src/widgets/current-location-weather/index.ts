@@ -1,1 +1,1 @@
-export { CurrentLocationWeather } from "./ui/CurrentLocationWeather";
+export { CurrentLocationSummaryCard } from "./ui/CurrentLocationSummaryCard";

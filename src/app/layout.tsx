@@ -4,8 +4,9 @@ import "./globals.css";
 import { Providers } from "./providers/providers";
 import { PropsWithChildren, ReactNode } from "react";
 import { AddressSearchInput } from "@features/search-address";
-import { CurrentLocationSummaryCard, FavoriteAddressWeatherList } from "@widgets/favorite-address-weather-list";
+import { FavoriteAddressWeatherList } from "@widgets/favorite-address-weather-list";
 import Link from "next/link";
+import { CurrentLocationSummaryCard } from "@widgets/current-location-weather";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

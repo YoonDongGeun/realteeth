@@ -2,48 +2,28 @@
 
 import { ParcelAddress, useLocationStore } from "@shared/model";
 import { useCurrentWeather, useDailyWeather } from "@entities/weather";
-import { useRouter } from "next/navigation";
-import { Suspense, useCallback } from "react";
+
+import { Suspense } from "react";
 import { Card, Text } from "@shared/ui";
+import Link from "next/link";
 
 export function CurrentLocationSummaryCard() {
   const { location, isFetchTried } = useLocationStore();
-  const router = useRouter();
-  const handleRoute = useCallback(() => {
-    router.push("/");
-  }, [router]);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        handleRoute();
-      }
-    },
-    [handleRoute]
-  );
   const address = location?.address || "서울특별시";
   const displayName = isFetchTried ? address : "위치 확인 중...";
   return (
-    <article
-      role="button"
-      tabIndex={0}
-      onClick={handleRoute}
-      onKeyDown={handleKeyDown}
-      aria-label={`현재 위치: ${displayName}`}
-    >
+    <Link href={"/"} role="button" tabIndex={0} aria-label={`현재 위치: ${displayName}`}>
       <Card className="p-4 bg-blue-500 dark:bg-blue-600 text-white flex hover:bg-blue-600 dark:hover:bg-blue-700 justify-between items-center cursor-pointer transition-all">
         <MyLocationDisplay display={displayName} />
         <div>
-          <Suspense fallback={<TempSkeleton />}>
-            {isFetchTried ? <CurrentLocationTemp address={address} /> : <TempSkeleton />}
-          </Suspense>
+          <Suspense fallback={<TempSkeleton />}>{isFetchTried && <CurrentLocationTemp address={address} />}</Suspense>
           <Suspense fallback={<MinMaxTempSkeleton />}>
-            {isFetchTried ? <MaxAndMinTemperatures address={address} /> : <MinMaxTempSkeleton />}
+            {isFetchTried && <MaxAndMinTemperatures address={address} />}
           </Suspense>
         </div>
       </Card>
-    </article>
+    </Link>
   );
 }
 
@@ -85,5 +65,6 @@ const MaxAndMinTemperatures = ({ address }: { address: ParcelAddress }) => {
     </div>
   );
 };
+
 const TempSkeleton = () => <div className="h-8 w-12 bg-white/20 rounded animate-pulse" aria-hidden="true" />;
 const MinMaxTempSkeleton = () => <div className="h-4 w-16 bg-white/20 rounded animate-pulse" aria-hidden="true" />;
