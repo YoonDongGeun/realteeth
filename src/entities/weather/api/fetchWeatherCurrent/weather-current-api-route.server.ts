@@ -17,11 +17,7 @@ export async function weatherCurrentApiRoute(request: NextRequest) {
     return NextResponse.json<ApiResponse>({ error: "잘못된 파라미터", data: null }, { status: 400 });
   }
 
-  const cacheSeconds = getSecondsUntilNextTenMinutes();
-  const res = await unstable_cache(fetchCurrentWeatherByAddress, ["currentWeather", address], {
-    tags: ["currentWeather", address],
-    revalidate: cacheSeconds,
-  })(address);
+  const res = await fetchCachedCurrentWeather(address);
   return NextResponse.json<FetchWeatherCurrentResponseDTO>({ data: res }, { status: 200 });
 }
 
@@ -30,6 +26,11 @@ function parseParams(params: URLSearchParams): WeatherCurrentApiSearchParams {
 
   return { address } as { address: string };
 }
+
+export const fetchCachedCurrentWeather = unstable_cache(fetchCurrentWeatherByAddress, ["currentWeather"], {
+  tags: ["currentWeather"],
+  revalidate: getSecondsUntilNextTenMinutes(),
+});
 
 async function fetchCurrentWeatherByAddress(address: ParcelAddress) {
   const coordinate = geocoder.geoCode(address);

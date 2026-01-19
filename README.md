@@ -281,15 +281,13 @@ Fuse.js를 활용한 퍼지 검색으로 사용자 편의성을 극대화했습�
 
 #### React Query 활용 전략
 
-**위치 정보: `useMutation`**
-
-- GPS는 브라우저 의존적이며 1회성 호출
-- 캐싱 불필요, 필요 시에만 호출하는 Mutation 패턴 적용
-
 **날씨 정보: `useSuspenseQuery`**
 
 - Streaming SSR과 Suspense 통합을 위해 사용
-- API 캐싱 시간에 맞춰 자동 리페칭 (`staleTime`, `cacheTime` 설정)
+- API 캐싱 시간에 맞춰 자동 리페칭 (`refetchInterval`, 'staleTime' `cacheTime` 설정)
+  ![alt text](image.png)
+  기상청 실시간 날씨는 매 1시 10분, 1시 20분, 1시 30분... 10분 간격 데이터 업데이트를 하기 때문에 해당 주기에 맞춰 refetch 하도록 하기 위해서 refetchInterval을 사용했습니다. staleTime은 stale 해지면 다시 refetch 하기 위한 조건이 해당 query가 remount되어야 하는데 화면만 켜놔도 새롭게 보여주는게 맞다고 생각했기 때문에 refetchInterval을 사용했습니다.그리고 최소 1분 또는 3분의 refetchInterval을 가져 연속적인 fetching을 방지했습니다.
+  . refetchInterval과 staleTime은 독립적이기 때문에 staleTime 설정은 기상청의 API 데이터 갱신 주기로 했습니다
 - 현재 온도, 일일 최고/최저 기온, 시간별 기온이 각각 다른 API이므로 독립적으로 스트리밍
 
 **캐싱 시간 관리:**

@@ -16,7 +16,7 @@ export const weatherQueries = {
         const res = await fetchWeatherCurrent(params);
         if (res.error) throw new Error(res.error);
         if (!res.data) throw new Error("No data returned");
-        return res.data;
+        return CurrentWeatherSchema.parse(res.data);
       },
     }),
   daily: (address: ParcelAddress) =>
@@ -27,7 +27,7 @@ export const weatherQueries = {
         const res = await fetchWeatherDaily(params);
         if (res.error) throw new Error(res.error);
         if (!res.data) throw new Error("No data returned");
-        return res.data;
+        return DailyWeatherSchema.parse(res.data);
       },
     }),
 };
@@ -37,9 +37,8 @@ export const useCurrentWeather = (address: ParcelAddress) => {
     ...weatherQueries.current(address),
     staleTime: 1000 * 60 * 10,
     refetchInterval: () => {
-      return getSecondsUntilNextTenMinutes() * 1000;
+      return Math.max(getSecondsUntilNextTenMinutes() * 1000, 60 * 1000);
     },
-    select: (data) => CurrentWeatherSchema.parse(data),
   });
 };
 
@@ -48,8 +47,7 @@ export const useDailyWeather = (address: ParcelAddress) => {
     ...weatherQueries.daily(address),
     staleTime: 1000 * 60 * 60 * 3,
     refetchInterval: () => {
-      return getSecondsUntilNextDailyWeatherUpdate() * 1000;
+      return Math.max(getSecondsUntilNextDailyWeatherUpdate() * 1000, 180 * 1000);
     },
-    select: (data) => DailyWeatherSchema.parse(data),
   });
 };
