@@ -6,7 +6,7 @@ import { MdGpsFixed } from "react-icons/md";
 
 export default function Home() {
   const { location, _rehydrated, isFetchTried, fetchGPSLocation, isGpsRefreshing } = useLocationStore();
-  const notReady = _rehydrated || !isFetchTried || isGpsRefreshing;
+  const notReady = !_rehydrated || !isFetchTried || isGpsRefreshing;
   const showAddress = notReady ? "위치 찾는중..." : location?.address || "서울특별시";
   return (
     <>

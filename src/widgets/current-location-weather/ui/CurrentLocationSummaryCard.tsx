@@ -10,18 +10,16 @@ import Link from "next/link";
 export function CurrentLocationSummaryCard() {
   const { location, isFetchTried, isGpsRefreshing, _rehydrated } = useLocationStore();
 
-  const notReady = _rehydrated || !isFetchTried || isGpsRefreshing;
+  const notReady = !_rehydrated || !isFetchTried || isGpsRefreshing;
   const showAddress = notReady ? "위치 찾는중..." : location?.address || "서울특별시";
   return (
     <Link href={"/"} role="button" tabIndex={0} aria-label={`현재 위치: ${showAddress}`}>
       <Card className="p-4 bg-blue-500 dark:bg-blue-600 text-white flex hover:bg-blue-600 dark:hover:bg-blue-700 justify-between items-center cursor-pointer transition-all">
         <MyLocationDisplay display={showAddress} />
         <div>
-          <Suspense fallback={<TempSkeleton />}>
-            {isFetchTried && <CurrentLocationTemp address={showAddress} />}
-          </Suspense>
+          <Suspense fallback={<TempSkeleton />}>{!notReady && <CurrentLocationTemp address={showAddress} />}</Suspense>
           <Suspense fallback={<MinMaxTempSkeleton />}>
-            {isFetchTried && <MaxAndMinTemperatures address={showAddress} />}
+            {!notReady && <MaxAndMinTemperatures address={showAddress} />}
           </Suspense>
         </div>
       </Card>
