@@ -1,4 +1,4 @@
-import { KOREA_DISTRICTS_DATA } from "@shared/model";
+import { KOREA_DISTRICTS_DATA, ParcelAddress } from "@shared/model";
 
 import { WeatherDetail } from "@widgets/weather-detail";
 
@@ -11,9 +11,14 @@ type Props = { searchParams: Promise<Params> };
 const PARCEL_ADDRESS_SET = new Set(KOREA_DISTRICTS_DATA);
 export default async function Search({ searchParams }: Props) {
   const q = (await searchParams).q;
-  if (!q || !PARCEL_ADDRESS_SET.has(q)) return <NO_WEATHER_DETAIL />;
+  if (isInValidQuery(q)) return <NO_WEATHER_DETAIL />;
+
   return <WeatherDetail address={q} />;
 }
+
+const isInValidQuery = (q?: string): q is undefined => {
+  return !q || !PARCEL_ADDRESS_SET.has(q);
+};
 
 function NO_WEATHER_DETAIL() {
   return (

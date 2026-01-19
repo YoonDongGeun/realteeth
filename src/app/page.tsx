@@ -4,6 +4,7 @@ import { IconButton, Text } from "@shared/ui";
 import { WeatherDetailCSR } from "@widgets/weather-detail";
 import { MdGpsFixed } from "react-icons/md";
 
+// 유저의 GPS 정보에 따른 CSR 렌더링.
 export default function Home() {
   const { location, _rehydrated, isFetchTried, fetchGPSLocation, isGpsRefreshing } = useLocationStore();
   const notReady = !_rehydrated || !isFetchTried || isGpsRefreshing;

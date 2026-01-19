@@ -6,16 +6,13 @@ type QueryOption = UseQueryOptions<any, any, unknown, any[]>;
 type Prefetchable = QueryOption;
 
 type Props = {
-  prefetchOptions: Prefetchable;
+  prefetchOption: Prefetchable;
   children: React.ReactNode;
 };
 
-export async function PrefetchBoundary({ prefetchOptions, children }: Props) {
+export async function PrefetchBoundary({ prefetchOption, children }: Props) {
   const queryClient = new QueryClient();
-  if (prefetchOptions instanceof Array) {
-    await Promise.all(prefetchOptions.map((prefetchOption) => queryClient.prefetchQuery(prefetchOption)));
-  } else {
-    await queryClient.prefetchQuery(prefetchOptions);
-  }
+  await queryClient.prefetchQuery(prefetchOption);
+
   return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;
 }

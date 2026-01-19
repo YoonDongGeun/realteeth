@@ -19,13 +19,13 @@ export function WeatherDetail({ address }: Props) {
       </Header>
 
       <Suspense fallback={<CurrentWeatherCardSkeleton />}>
-        <PrefetchBoundary prefetchOptions={weatherQueries.current(address)}>
+        <PrefetchBoundary prefetchOption={weatherQueries.current(address)}>
           <StreamingCurrentWeather address={address} />
         </PrefetchBoundary>
       </Suspense>
 
       <Suspense fallback={<DailyWeatherCardSkeleton />}>
-        <PrefetchBoundary prefetchOptions={weatherQueries.daily(address)}>
+        <PrefetchBoundary prefetchOption={weatherQueries.daily(address)}>
           <StreamingDailyWeather address={address} />
         </PrefetchBoundary>
       </Suspense>
