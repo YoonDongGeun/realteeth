@@ -1,7 +1,7 @@
 import { ApiResponse, ParcelAddress } from "@shared/model";
 
 import { apiClient } from "@shared/api";
-import { WeatherCurrentApiSearchParams } from "./weather-current-api-route.server";
+import { WeatherCurrentApiSearchParams } from "@app/api/weather-current/weather-current-api-route.server";
 import z from "zod";
 import { CurrentWeatherSchema } from "../../model/schemas";
 

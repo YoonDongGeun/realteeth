@@ -1,5 +1,6 @@
 "use client";
 
+import { localDayjs } from "@shared/lib";
 import { HourlyWeather } from "../../model/types";
 import { useMemo } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, LabelList } from "recharts";
@@ -11,7 +12,7 @@ type Props = {
 export function HourlyWeatherStatistics({ data }: Props) {
   const chartData = useMemo(() => {
     return data.map((item) => ({
-      time: item.time.format("H시"),
+      time: localDayjs(item.time).format("H시"),
       temp: Math.round(item.temperature),
     }));
   }, [data]);

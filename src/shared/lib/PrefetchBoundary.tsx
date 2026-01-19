@@ -1,8 +1,10 @@
 import { dehydrate, HydrationBoundary, QueryClient, UseQueryOptions } from "@tanstack/react-query";
 
-type Prefetchable<T = unknown> =
-  | UseQueryOptions<T, unknown, T, readonly unknown[]>
-  | UseQueryOptions<T, unknown, T, readonly unknown[]>[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type QueryOption = UseQueryOptions<any, any, unknown, any[]>;
+
+type Prefetchable = QueryOption;
+
 type Props = {
   prefetchOptions: Prefetchable;
   children: React.ReactNode;

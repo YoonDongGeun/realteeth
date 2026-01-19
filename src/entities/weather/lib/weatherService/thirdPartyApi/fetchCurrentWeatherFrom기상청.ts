@@ -6,6 +6,8 @@ import {
   기상청ApiResponse,
   실시간예보데이터,
 } from "./types";
+import { cacheLife, cacheTag } from "next/cache";
+import { getSecondsUntilNextTenMinutes } from "@entities/weather/api/fetchWeatherCurrent";
 
 interface GetUltraSrtNcstParams {
   /** 발표일자 (YYYYMMDD) */
@@ -23,6 +25,14 @@ const ROWS_PER_HOUR = 8;
  * 초단기실황 조회 (현재 날씨 관측 데이터)
  */
 export async function fetchCurrentWeatherFrom기상청(params: GetUltraSrtNcstParams) {
+  "use cache";
+  cacheLife({
+    stale: 300,
+    revalidate: getSecondsUntilNextTenMinutes(),
+    expire: getSecondsUntilNextTenMinutes(),
+  });
+  cacheTag("currentWeather");
+
   const url = new QueryStringBuilder(FORECAST_API_BASE_URL, "/getUltraSrtNcst")
     .setMany({
       authKey: FORECAST_API_KRY(),

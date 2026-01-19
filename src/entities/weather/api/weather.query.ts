@@ -1,5 +1,4 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { CurrentWeatherSchema, DailyWeatherSchema } from "../model/schemas";
 
 import { fetchWeatherCurrent } from "./fetchWeatherCurrent/fetchWeatherCurrent";
 import { fetchWeatherDaily } from "./fetchWeatherDaily/fetchWeatherDaily ";
@@ -16,9 +15,14 @@ export const weatherQueries = {
         const res = await fetchWeatherCurrent(params);
         if (res.error) throw new Error(res.error);
         if (!res.data) throw new Error("No data returned");
-        return CurrentWeatherSchema.parse(res.data);
+        return res.data;
+      },
+      staleTime: 1000 * 60 * 10,
+      refetchInterval: () => {
+        return Math.max(getSecondsUntilNextTenMinutes() * 1000, 60 * 1000);
       },
     }),
+
   daily: (address: ParcelAddress) =>
     queryOptions({
       queryKey: ["weather", address, "daily"],
@@ -27,7 +31,11 @@ export const weatherQueries = {
         const res = await fetchWeatherDaily(params);
         if (res.error) throw new Error(res.error);
         if (!res.data) throw new Error("No data returned");
-        return DailyWeatherSchema.parse(res.data);
+        return res.data;
+      },
+      staleTime: 1000 * 60 * 60 * 3,
+      refetchInterval: () => {
+        return Math.max(getSecondsUntilNextDailyWeatherUpdate() * 1000, 180 * 1000);
       },
     }),
 };
@@ -35,19 +43,11 @@ export const weatherQueries = {
 export const useCurrentWeather = (address: ParcelAddress) => {
   return useSuspenseQuery({
     ...weatherQueries.current(address),
-    staleTime: 1000 * 60 * 10,
-    refetchInterval: () => {
-      return Math.max(getSecondsUntilNextTenMinutes() * 1000, 60 * 1000);
-    },
   });
 };
 
 export const useDailyWeather = (address: ParcelAddress) => {
   return useSuspenseQuery({
     ...weatherQueries.daily(address),
-    staleTime: 1000 * 60 * 60 * 3,
-    refetchInterval: () => {
-      return Math.max(getSecondsUntilNextDailyWeatherUpdate() * 1000, 180 * 1000);
-    },
   });
 };

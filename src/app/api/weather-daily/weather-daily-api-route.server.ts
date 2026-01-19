@@ -1,21 +1,21 @@
 import { ApiResponse, ParcelAddress } from "@shared/model";
 import { NextRequest, NextResponse } from "next/server";
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { geocoder } from "@shared/lib/geocoder";
 import { weatherService } from "@entities/weather/lib";
-import { FetchWeatherDailyResponse } from "./fetchWeatherDaily ";
-import { getSecondsUntilNextDailyWeatherUpdate } from "./current-weather-cache-time";
+import { FetchWeatherDailyResponse, getSecondsUntilNextDailyWeatherUpdate } from "@entities/weather";
 
 export type WeatherDailyApiSearchParams = {
   address: ParcelAddress;
 };
 
+// api route의 경우 반드시 app 폴더에 파일이 위치해야 캐싱됨!! 이동 금지.
 export async function weatherDailyApiRoute(request: NextRequest) {
   const { address } = parseParams(request.nextUrl.searchParams);
   if (!address) return NextResponse.json<ApiResponse>({ error: "잘못된 파라미터", data: null }, { status: 400 });
 
-  const res = await fetchCachedDailyWeather(address);
+  const res = await fetchDailyWeatherByAddress(address);
   return NextResponse.json<FetchWeatherDailyResponse>({ data: res }, { status: 200 });
 }
 
@@ -24,12 +24,14 @@ function parseParams(params: URLSearchParams): WeatherDailyApiSearchParams {
   return { address } as { address: string };
 }
 
-const fetchCachedDailyWeather = unstable_cache(fetchDailyWeatherByAddress, ["dailyWeather"], {
-  tags: ["dailyWeather"],
-  revalidate: getSecondsUntilNextDailyWeatherUpdate(),
-});
-
-async function fetchDailyWeatherByAddress(address: ParcelAddress) {
+export async function fetchDailyWeatherByAddress(address: ParcelAddress) {
+  "use cache";
+  cacheLife({
+    stale: 600,
+    revalidate: getSecondsUntilNextDailyWeatherUpdate(),
+    expire: getSecondsUntilNextDailyWeatherUpdate(),
+  });
+  cacheTag("dailyWeather");
   const coordinate = geocoder.geoCode(address);
   return await weatherService.fetchDailyWeatherByCoordinates(coordinate);
 }

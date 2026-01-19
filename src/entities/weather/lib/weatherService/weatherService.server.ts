@@ -1,13 +1,12 @@
-import type { CurrentWeatherRaw, DailyWeatherRaw } from "../../model/types";
-
 import { 단기예보데이터ToDailyWeather, 실시간예보데이터ToCurrentWeather } from "./thirdPartyApi/weather.adapter";
 import { localDayjs } from "@shared/lib";
 import { fetchDailyWeatherFrom기상청 } from "./thirdPartyApi/fetchDailyWeatherFrom기상청";
 import { fetchCurrentWeatherFrom기상청 } from "./thirdPartyApi/fetchCurrentWeatherFrom기상청";
 import { convertToGrid } from "./thirdPartyApi/utils/coordinatesToGrid";
 import { Coordinate } from "@shared/model";
+import { CurrentWeather, DailyWeather } from "../../model/types";
 
-async function fetchDailyWeatherByCoordinates(coordinate: Coordinate): Promise<DailyWeatherRaw> {
+async function fetchDailyWeatherByCoordinates(coordinate: Coordinate): Promise<DailyWeather> {
   // WGS84 좌표 → 기상청 격자 좌표 변환
   const gridCoordinate = convertToGrid(coordinate);
   const { date, time } = getBaseDateTimeForDailyWeather();
@@ -21,7 +20,7 @@ async function fetchDailyWeatherByCoordinates(coordinate: Coordinate): Promise<D
   return 단기예보데이터ToDailyWeather(res);
 }
 
-async function fetchCurrentWeatherByCoordinates(coordinate: Coordinate): Promise<CurrentWeatherRaw> {
+async function fetchCurrentWeatherByCoordinates(coordinate: Coordinate): Promise<CurrentWeather> {
   // WGS84 좌표 → 기상청 격자 좌표 변환
   const { nx, ny } = convertToGrid(coordinate);
   const { date, time } = getBaseTimeForCurrentWeather();

@@ -1,23 +1,21 @@
 import { ApiResponse, ParcelAddress } from "@shared/model";
 import { NextRequest, NextResponse } from "next/server";
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { geocoder } from "@shared/lib/geocoder";
 import { weatherService } from "@entities/weather/lib";
-import { FetchWeatherCurrentResponseDTO } from "./fetchWeatherCurrent";
-import { getSecondsUntilNextTenMinutes } from "./current-weather-cache-time";
+import { FetchWeatherCurrentResponseDTO, getSecondsUntilNextTenMinutes } from "@entities/weather";
 
 export type WeatherCurrentApiSearchParams = {
   address: ParcelAddress;
 };
 
+// api route의 경우 반드시 app 폴더에 파일이 위치해야 캐싱됨!! 이동 금지.
 export async function weatherCurrentApiRoute(request: NextRequest) {
   const { address } = parseParams(request.nextUrl.searchParams);
-  if (!address) {
-    return NextResponse.json<ApiResponse>({ error: "잘못된 파라미터", data: null }, { status: 400 });
-  }
+  if (!address) return NextResponse.json<ApiResponse>({ error: "잘못된 파라미터", data: null }, { status: 400 });
 
-  const res = await fetchCachedCurrentWeather(address);
+  const res = await fetchCurrentWeatherByAddress(address);
   return NextResponse.json<FetchWeatherCurrentResponseDTO>({ data: res }, { status: 200 });
 }
 
@@ -27,12 +25,14 @@ function parseParams(params: URLSearchParams): WeatherCurrentApiSearchParams {
   return { address } as { address: string };
 }
 
-export const fetchCachedCurrentWeather = unstable_cache(fetchCurrentWeatherByAddress, ["currentWeather"], {
-  tags: ["currentWeather"],
-  revalidate: getSecondsUntilNextTenMinutes(),
-});
-
-async function fetchCurrentWeatherByAddress(address: ParcelAddress) {
+export async function fetchCurrentWeatherByAddress(address: ParcelAddress) {
+  "use cache";
+  cacheLife({
+    stale: 300,
+    revalidate: getSecondsUntilNextTenMinutes(),
+    expire: getSecondsUntilNextTenMinutes(),
+  });
+  cacheTag("currentWeather");
   const coordinate = geocoder.geoCode(address);
   return await weatherService.fetchCurrentWeatherByCoordinates(coordinate);
 }

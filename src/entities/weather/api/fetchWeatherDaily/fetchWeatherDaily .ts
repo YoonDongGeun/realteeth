@@ -1,7 +1,7 @@
 import { apiClient } from "@shared/api";
 import { ApiResponse, ParcelAddress } from "@shared/model";
 import { DailyWeatherSchema } from "../../model/schemas";
-import { WeatherDailyApiSearchParams } from "./weather-daily-api-route.server";
+import { WeatherDailyApiSearchParams } from "@app/api/weather-daily/weather-daily-api-route.server";
 import z from "zod";
 type Props = { address: ParcelAddress };
 

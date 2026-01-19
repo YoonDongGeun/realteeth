@@ -1,4 +1,4 @@
-import type { WeatherCondition, DailyWeatherRaw, HourlyWeatherRaw, CurrentWeatherRaw } from "../../../model/types";
+import type { CurrentWeather, DailyWeather, HourlyWeather, WeatherCondition } from "../../../model/types";
 import {
   CATEGORY_CODE,
   CURRENT_WEATHER_CATEGORY_CODE,
@@ -11,7 +11,7 @@ import {
 import { localDayjs } from "@shared/lib";
 
 /** 기상청 API 응답을 내부 도메인 모델로 변환 (Raw) */
-export function 단기예보데이터ToDailyWeather(items: 단기예보데이터[]): DailyWeatherRaw {
+export function 단기예보데이터ToDailyWeather(items: 단기예보데이터[]): DailyWeather {
   const groupedByDateTime = groupByDateTime(items);
   const hourly = extractHourlyWeather(groupedByDateTime);
 
@@ -58,8 +58,8 @@ function groupByDateTime(items: 단기예보데이터[]): Map<string, Map<string
 }
 
 /** 시간대별 날씨 추출 (24시간) */
-function extractHourlyWeather(grouped: Map<string, Map<string, string>>): HourlyWeatherRaw[] {
-  const hourlyList: HourlyWeatherRaw[] = [];
+function extractHourlyWeather(grouped: Map<string, Map<string, string>>): HourlyWeather[] {
+  const hourlyList: HourlyWeather[] = [];
   const entries = Array.from(grouped.entries()).slice(0, 24);
 
   for (const [key, data] of entries) {
@@ -117,7 +117,7 @@ function getWeatherCondition(skyCode: string, ptyCode: string): WeatherCondition
 /**
  * 초단기실황 데이터를 CurrentWeather로 변환
  */
-export function 실시간예보데이터ToCurrentWeather(items: 실시간예보데이터[]): CurrentWeatherRaw {
+export function 실시간예보데이터ToCurrentWeather(items: 실시간예보데이터[]): CurrentWeather {
   const dataMap = new Map<string, string>();
   let baseDate = "";
   let baseTime = "";
