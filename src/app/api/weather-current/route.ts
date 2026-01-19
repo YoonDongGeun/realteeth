@@ -37,11 +37,11 @@ export async function fetchCurrentWeatherByAddress(address: ParcelAddress) {
 const getCachedCurrentWeatherByAddress = (address: string) =>
   unstable_cache(
     async (address: string) => {
-      return fetchCurrentWeatherByAddress(address);
+      return await fetchCurrentWeatherByAddress(address);
     },
-    ["user", address],
+    [`current-${address}`],
     {
       revalidate: getSecondsUntilNextTenMinutes(),
-      tags: ["daily", address],
+      tags: [`current-${address}`],
     }
   )(address);

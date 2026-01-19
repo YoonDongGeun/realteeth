@@ -7,7 +7,6 @@ import {
   기상청ApiResponse,
   단기예보데이터,
 } from "./types";
-import { cacheLife, cacheTag } from "next/cache";
 import { getSecondsUntilNextDailyWeatherUpdate } from "@entities/weather/api/fetchWeatherDaily";
 
 interface GetVilageFcstParams {
@@ -23,13 +22,6 @@ const ROWS_PER_HOUR = 12;
  * 단기예보 조회
  */
 export async function fetchDailyWeatherFrom기상청(params: GetVilageFcstParams) {
-  "use cache";
-  cacheLife({
-    stale: 600,
-    revalidate: getSecondsUntilNextDailyWeatherUpdate(),
-    expire: getSecondsUntilNextDailyWeatherUpdate(),
-  });
-  cacheTag("dailyWeather");
   const { baseDate, baseTime, gridCoordinate } = params;
 
   const url = new QueryStringBuilder(FORECAST_API_BASE_URL, "/getVilageFcst")
@@ -52,7 +44,7 @@ export async function fetchDailyWeatherFrom기상청(params: GetVilageFcstParams
     },
     next: {
       revalidate: getSecondsUntilNextDailyWeatherUpdate(),
-      tags: [baseDate, baseTime, gridCoordinate.nx.toString(), gridCoordinate.ny.toString()],
+      tags: [`daily-${baseDate}-${baseTime}-${gridCoordinate.nx}-${gridCoordinate.ny}`],
     },
   });
   if (!res.ok) {
