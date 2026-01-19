@@ -82,6 +82,7 @@ const MaxAndMinTemperatures = ({ address }: { address: ParcelAddress }) => {
 
 const EventGuard = ({ children }: PropsWithChildren) => (
   <div
+    className="w-fit"
     onClick={(e) => {
       e.stopPropagation();
       e.preventDefault();

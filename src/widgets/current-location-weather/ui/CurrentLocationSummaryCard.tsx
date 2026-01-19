@@ -7,7 +7,7 @@ import { Suspense, useCallback } from "react";
 import { Card, Text } from "@shared/ui";
 
 export function CurrentLocationSummaryCard() {
-  const { location } = useLocationStore();
+  const { location, isFetchTried } = useLocationStore();
   const router = useRouter();
   const handleRoute = useCallback(() => {
     router.push("/");
@@ -22,23 +22,24 @@ export function CurrentLocationSummaryCard() {
     },
     [handleRoute]
   );
-
+  const address = location?.address || "서울특별시";
+  const displayName = isFetchTried ? address : "위치 확인 중...";
   return (
     <article
       role="button"
       tabIndex={0}
       onClick={handleRoute}
       onKeyDown={handleKeyDown}
-      aria-label={`현재 위치: ${location?.address || "위치 확인 중"}`}
+      aria-label={`현재 위치: ${displayName}`}
     >
       <Card className="p-4 bg-blue-500 dark:bg-blue-600 text-white flex hover:bg-blue-600 dark:hover:bg-blue-700 justify-between items-center cursor-pointer transition-all">
-        <Header address={location?.address} />
+        <MyLocationDisplay display={displayName} />
         <div>
-          <Suspense fallback={<div className="h-8 w-12 bg-white/20 rounded animate-pulse" aria-hidden="true" />}>
-            <CurrentLocationTemp address={location?.address || "서울특별시"} />
+          <Suspense fallback={<TempSkeleton />}>
+            {isFetchTried ? <CurrentLocationTemp address={address} /> : <TempSkeleton />}
           </Suspense>
-          <Suspense fallback={<div className="h-4 w-8 bg-white/20 rounded animate-pulse" aria-hidden="true" />}>
-            <MaxAndMinTemperatures address={location?.address || "서울특별시"} />
+          <Suspense fallback={<MinMaxTempSkeleton />}>
+            {isFetchTried ? <MaxAndMinTemperatures address={address} /> : <MinMaxTempSkeleton />}
           </Suspense>
         </div>
       </Card>
@@ -46,11 +47,15 @@ export function CurrentLocationSummaryCard() {
   );
 }
 
-function Header({ address }: { address?: ParcelAddress }) {
+function MyLocationDisplay({ display }: { display?: ParcelAddress }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="font-semibold text-sm">{address ? "나의 위치" : "위치 확인 중"}</span>
-      <span className="text-xs text-blue-100 truncate max-w-30">{address ? address : "정확한 위치 찾는 중..."}</span>
+      <Text variant="body" color="inherit">
+        나의 위치
+      </Text>
+      <Text variant="body" color="inherit" className="truncate max-w-40">
+        {display}
+      </Text>
     </div>
   );
 }
@@ -80,3 +85,5 @@ const MaxAndMinTemperatures = ({ address }: { address: ParcelAddress }) => {
     </div>
   );
 };
+const TempSkeleton = () => <div className="h-8 w-12 bg-white/20 rounded animate-pulse" aria-hidden="true" />;
+const MinMaxTempSkeleton = () => <div className="h-4 w-16 bg-white/20 rounded animate-pulse" aria-hidden="true" />;

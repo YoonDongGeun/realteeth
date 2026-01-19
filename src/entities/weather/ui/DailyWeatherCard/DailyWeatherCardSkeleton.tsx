@@ -11,11 +11,9 @@ export function DailyWeatherCardSkeleton() {
       </div>
 
       {/* Main Info */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mt-1">
         <div className="flex items-baseline gap-2">
-          <div className="h-10 w-16 bg-zinc-200 dark:bg-zinc-700 rounded-xl animate-pulse" />
-          <div className="h-8 w-4 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse" />
-          <div className="h-10 w-16 bg-zinc-200 dark:bg-zinc-700 rounded-xl animate-pulse" />
+          <div className="h-10 w-36 bg-zinc-200 dark:bg-zinc-700 rounded-xl animate-pulse" />
         </div>
       </div>
 

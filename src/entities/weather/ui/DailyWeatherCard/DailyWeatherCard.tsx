@@ -4,7 +4,7 @@ import { DailyWeather } from "../../model/types";
 import { localDayjs } from "@shared/lib";
 import { Card, Text } from "@shared/ui";
 import dynamic from "next/dynamic";
-import { ReactNode, Suspense, useMemo } from "react";
+import { memo, ReactNode, Suspense, useMemo } from "react";
 import { DailyWeatherCardSkeleton } from "./DailyWeatherCardSkeleton";
 
 const HourlyWeatherStatistics = dynamic(
@@ -90,7 +90,7 @@ const Content = ({ maxTemperature, minTemperature }: ContetProps) => {
 type HourlyTemperatureChartProps = {
   data: DailyWeather["hourly"];
 };
-const HourlyTemperatureChart = ({ data }: HourlyTemperatureChartProps) => {
+const HourlyTemperatureChart = memo(({ data }: HourlyTemperatureChartProps) => {
   return (
     <div className="w-full h-50 select-none relative">
       <Suspense fallback={<HourlyWeatherStatisticsSkeleton />}>
@@ -98,7 +98,8 @@ const HourlyTemperatureChart = ({ data }: HourlyTemperatureChartProps) => {
       </Suspense>
     </div>
   );
-};
+});
+HourlyTemperatureChart.displayName = "날씨 차트";
 
 function HourlyWeatherStatisticsSkeleton() {
   return <div className="w-full h-50 bg-zinc-100 dark:bg-zinc-800/50 rounded-2xl animate-pulse" />;

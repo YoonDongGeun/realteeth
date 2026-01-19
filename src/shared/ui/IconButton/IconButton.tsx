@@ -63,7 +63,7 @@ export function IconButton({
       className={cn(iconButtonVariants({ variant, size, disabledState: !!disabled }), className)}
       {...props}
     >
-      <Icon className={cn("w-6 h-6", iconClassName)} />
+      <Icon className={cn("w-5 h-5", iconClassName)} />
     </HeadlessButton>
   );
 }

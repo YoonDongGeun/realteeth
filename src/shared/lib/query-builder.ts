@@ -1,6 +1,17 @@
-const getBaseUrl = () => {
-  return process.env.NEXT_PUBLIC_BASE_URL!;
-};
+export function getBaseUrl() {
+  // 브라우저
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+
+  // Vercel (server)
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  // local fallback
+  return "http://localhost:3000";
+}
 
 export class QueryStringBuilder {
   private base: string = getBaseUrl();
