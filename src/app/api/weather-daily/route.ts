@@ -32,14 +32,3 @@ export async function fetchDailyWeatherByAddress(address: ParcelAddress) {
   cacheTag("currentWeather", address);
   return await weatherService.fetchDailyWeatherByCoordinates(coordinate);
 }
-// const getCachedDailyWeatherByAddress = (address: string) =>
-//   unstable_cache(
-//     async (address: string) => {
-//       return await fetchDailyWeatherByAddress(address);
-//     },
-//     [`daily-${address}`],
-//     {
-//       revalidate: getSecondsUntilNextDailyWeatherUpdate(),
-//       tags: [`daily-${address}`],
-//     }
-//   )(address);

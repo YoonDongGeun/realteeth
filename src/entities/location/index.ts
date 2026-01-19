@@ -1,1 +1,1 @@
-export { myLocationApiRoute } from "./api/fetchMyLocation/my-location-api-route.server";
+export { type MyLocationApiSearchParams, type MyLocationApiResponse } from "./api/fetchMyLocation/fetchMyLocation";
