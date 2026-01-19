@@ -1,18 +1,20 @@
 import { ApiResponse, ParcelAddress } from "@shared/model";
 
 import { apiClient } from "@shared/api";
-import { WeatherCurrentApiSearchParams } from "@app/api/weather-current/weather-current-api-route.server";
+
 import z from "zod";
 import { CurrentWeatherSchema } from "../../model/schemas";
 
 type Props = { address: ParcelAddress };
 
-type Params = WeatherCurrentApiSearchParams;
+export type WeatherCurrentApiSearchParams = {
+  address: ParcelAddress;
+};
 
 export type FetchWeatherCurrentResponseDTO = ApiResponse<z.input<typeof CurrentWeatherSchema>>;
 
 export const fetchWeatherCurrent = async ({ address }: Props) => {
-  const params: Params = {
+  const params: WeatherCurrentApiSearchParams = {
     address,
   };
   const response = await apiClient.get<FetchWeatherCurrentResponseDTO>("/api/weather-current", {

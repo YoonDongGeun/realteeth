@@ -58,16 +58,13 @@ export const useLocationStore = create<LocationStore>()(
 
         // GPS를 지원하지 않는 브라우저
         if (!navigator.geolocation) {
-          console.error("GPS를 지원하지 않는 브라우저입니다.");
+          console.warn("GPS를 지원하지 않는 브라우저입니다.");
           await fetchMyLocation(null)
             .then(({ data: location }) => {
-              set({ location, isFetchTried: true });
+              set({ location, isFetchTried: true, isGpsRefreshing: false });
             })
             .catch(() => {
-              set({ location: null, isFetchTried: true });
-            })
-            .finally(() => {
-              set({ isGpsRefreshing: false });
+              set({ location: null, isFetchTried: true, isGpsRefreshing: false });
             });
           return;
         }
@@ -79,26 +76,20 @@ export const useLocationStore = create<LocationStore>()(
           };
           await fetchMyLocation(newCoords)
             .then(({ data: location }) => {
-              set({ location, isFetchTried: true });
+              set({ location, isFetchTried: true, isGpsRefreshing: false });
             })
             .catch(() => {
-              set({ location: null, isFetchTried: true });
-            })
-            .finally(() => {
-              set({ isGpsRefreshing: false });
+              set({ location: null, isFetchTried: true, isGpsRefreshing: false });
             });
         };
         const onGPSFail = async (err: GeolocationPositionError) => {
           console.warn(`GPS 활성화 실패 ${err.message}`);
           await fetchMyLocation(null)
             .then(({ data: location }) => {
-              set({ location, isFetchTried: true });
+              set({ location, isFetchTried: true, isGpsRefreshing: false });
             })
             .catch(() => {
-              set({ location: null, isFetchTried: true });
-            })
-            .finally(() => {
-              set({ isGpsRefreshing: false });
+              set({ location: null, isFetchTried: true, isGpsRefreshing: false });
             });
         };
         navigator.geolocation.getCurrentPosition(onGPSSuccess, onGPSFail, {

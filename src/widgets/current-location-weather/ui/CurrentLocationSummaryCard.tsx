@@ -8,18 +8,20 @@ import { Card, Text } from "@shared/ui";
 import Link from "next/link";
 
 export function CurrentLocationSummaryCard() {
-  const { location, isFetchTried } = useLocationStore();
+  const { location, isFetchTried, isGpsRefreshing, _rehydrated } = useLocationStore();
 
-  const address = location?.address || "서울특별시";
-  const displayName = isFetchTried ? address : "위치 확인 중...";
+  const notReady = _rehydrated || !isFetchTried || isGpsRefreshing;
+  const showAddress = notReady ? "위치 찾는중..." : location?.address || "서울특별시";
   return (
-    <Link href={"/"} role="button" tabIndex={0} aria-label={`현재 위치: ${displayName}`}>
+    <Link href={"/"} role="button" tabIndex={0} aria-label={`현재 위치: ${showAddress}`}>
       <Card className="p-4 bg-blue-500 dark:bg-blue-600 text-white flex hover:bg-blue-600 dark:hover:bg-blue-700 justify-between items-center cursor-pointer transition-all">
-        <MyLocationDisplay display={displayName} />
+        <MyLocationDisplay display={showAddress} />
         <div>
-          <Suspense fallback={<TempSkeleton />}>{isFetchTried && <CurrentLocationTemp address={address} />}</Suspense>
+          <Suspense fallback={<TempSkeleton />}>
+            {isFetchTried && <CurrentLocationTemp address={showAddress} />}
+          </Suspense>
           <Suspense fallback={<MinMaxTempSkeleton />}>
-            {isFetchTried && <MaxAndMinTemperatures address={address} />}
+            {isFetchTried && <MaxAndMinTemperatures address={showAddress} />}
           </Suspense>
         </div>
       </Card>
