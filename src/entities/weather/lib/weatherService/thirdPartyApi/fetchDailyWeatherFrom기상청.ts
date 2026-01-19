@@ -46,7 +46,15 @@ export async function fetchDailyWeatherFrom기상청(params: GetVilageFcstParams
     .build();
 
   // apiClient 사용하지 말기
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    next: {
+      revalidate: getSecondsUntilNextDailyWeatherUpdate(),
+      tags: [baseDate, baseTime, gridCoordinate.nx.toString(), gridCoordinate.ny.toString()],
+    },
+  });
   if (!res.ok) {
     throw new Error(`KMA API 에러: ${res.status} ${res.statusText}`);
   }

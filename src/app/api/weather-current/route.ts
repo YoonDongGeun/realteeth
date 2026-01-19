@@ -1,6 +1,6 @@
 import { ApiResponse, ParcelAddress } from "@shared/model";
 import { NextRequest, NextResponse } from "next/server";
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheLife, cacheTag, unstable_cache } from "next/cache";
 
 import { geocoder } from "@shared/lib/geocoder";
 import { weatherService } from "@entities/weather/lib";
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const { address } = parseParams(request.nextUrl.searchParams);
   if (!address) return NextResponse.json<ApiResponse>({ error: "잘못된 파라미터", data: null }, { status: 400 });
 
-  const res = await fetchCurrentWeatherByAddress(address);
+  const res = await getCachedCurrentWeatherByAddress(address);
   return NextResponse.json<FetchWeatherCurrentResponseDTO>({ data: res }, { status: 200 });
 }
 
@@ -33,3 +33,15 @@ export async function fetchCurrentWeatherByAddress(address: ParcelAddress) {
   cacheTag("currentWeather", address);
   return await weatherService.fetchCurrentWeatherByCoordinates(coordinate);
 }
+
+const getCachedCurrentWeatherByAddress = (address: string) =>
+  unstable_cache(
+    async (address: string) => {
+      return fetchCurrentWeatherByAddress(address);
+    },
+    ["user", address],
+    {
+      revalidate: getSecondsUntilNextTenMinutes(),
+      tags: ["daily", address],
+    }
+  )(address);

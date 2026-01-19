@@ -51,6 +51,10 @@ export async function fetchCurrentWeatherFrom기상청(params: GetUltraSrtNcstPa
     headers: {
       "Content-Type": "application/json",
     },
+    next: {
+      revalidate: getSecondsUntilNextTenMinutes(),
+      tags: ["current", params.baseDate, params.baseTime, params.nx.toString(), params.ny.toString()],
+    },
   });
 
   if (!res.ok) {
